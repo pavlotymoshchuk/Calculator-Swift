@@ -36,7 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C7A69DF323F2D8A9008EBAE3 /* Calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Calculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7A69DF323F2D8A9008EBAE3 /* iCalc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iCalc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A69DF623F2D8A9008EBAE3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C7A69DF823F2D8A9008EBAE3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C7A69DFA23F2D8A9008EBAE3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -92,7 +92,7 @@
 		C7A69DF423F2D8A9008EBAE3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C7A69DF323F2D8A9008EBAE3 /* Calculator.app */,
+				C7A69DF323F2D8A9008EBAE3 /* iCalc.app */,
 				C7A69E0C23F2D8AB008EBAE3 /* CalculatorTests.xctest */,
 				C7A69E1723F2D8AB008EBAE3 /* CalculatorUITests.xctest */,
 			);
@@ -136,9 +136,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C7A69DF223F2D8A9008EBAE3 /* Calculator */ = {
+		C7A69DF223F2D8A9008EBAE3 /* iCalc */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C7A69E2023F2D8AB008EBAE3 /* Build configuration list for PBXNativeTarget "Calculator" */;
+			buildConfigurationList = C7A69E2023F2D8AB008EBAE3 /* Build configuration list for PBXNativeTarget "iCalc" */;
 			buildPhases = (
 				C7A69DEF23F2D8A9008EBAE3 /* Sources */,
 				C7A69DF023F2D8A9008EBAE3 /* Frameworks */,
@@ -148,9 +148,9 @@
 			);
 			dependencies = (
 			);
-			name = Calculator;
+			name = iCalc;
 			productName = Calculator;
-			productReference = C7A69DF323F2D8A9008EBAE3 /* Calculator.app */;
+			productReference = C7A69DF323F2D8A9008EBAE3 /* iCalc.app */;
 			productType = "com.apple.product-type.application";
 		};
 		C7A69E0B23F2D8AB008EBAE3 /* CalculatorTests */ = {
@@ -225,7 +225,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C7A69DF223F2D8A9008EBAE3 /* Calculator */,
+				C7A69DF223F2D8A9008EBAE3 /* iCalc */,
 				C7A69E0B23F2D8AB008EBAE3 /* CalculatorTests */,
 				C7A69E1623F2D8AB008EBAE3 /* CalculatorUITests */,
 			);
@@ -292,12 +292,12 @@
 /* Begin PBXTargetDependency section */
 		C7A69E0E23F2D8AB008EBAE3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C7A69DF223F2D8A9008EBAE3 /* Calculator */;
+			target = C7A69DF223F2D8A9008EBAE3 /* iCalc */;
 			targetProxy = C7A69E0D23F2D8AB008EBAE3 /* PBXContainerItemProxy */;
 		};
 		C7A69E1923F2D8AB008EBAE3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C7A69DF223F2D8A9008EBAE3 /* Calculator */;
+			target = C7A69DF223F2D8A9008EBAE3 /* iCalc */;
 			targetProxy = C7A69E1823F2D8AB008EBAE3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -576,7 +576,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C7A69E2023F2D8AB008EBAE3 /* Build configuration list for PBXNativeTarget "Calculator" */ = {
+		C7A69E2023F2D8AB008EBAE3 /* Build configuration list for PBXNativeTarget "iCalc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C7A69E2123F2D8AB008EBAE3 /* Debug */,

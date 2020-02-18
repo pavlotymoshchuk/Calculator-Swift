@@ -13,58 +13,60 @@ class ViewController: UIViewController {
     @IBOutlet var numberButtonArr: [UIButton]!
 //    var numberButtonArr: Array<UIButton> = []
     
-    func buttonWasPressed() {
-        print("You pressed the button")
+    fileprivate func creatingNumberButton(_ num: Int) {
+        var height = 60
+        var width = 60
+        var x = 0
+        var y = 0
+        
+        if num < 1 { width = 145; y = 540; x = 30 }
+        else if num < 4 { y = 455 }
+        else if num < 7 { y = 370 }
+        else { y = 285 }
+        
+        if num%3 == 1 { x = 30 }
+        else if num%3 == 2 { x = 115 }
+        else { if num != 0 { x = 200 } }
+        
+        
+        let numberButton = UIButton()
+        numberButton.frame = CGRect(x: x, y: y, width: width, height: height)
+        numberButton.setTitle(String(num), for: .normal)
+        numberButton.titleLabel?.font = UIFont.systemFont(ofSize: 35)
+        numberButton.setTitleColor(UIColor(rgb: 0xFFFFFF), for: .normal)
+        
+        numberButton.backgroundColor = UIColor(rgb: 0x494C4D)
+        numberButton.setBackgroundColor(UIColor(rgb: 0x858585), for: .highlighted)
+        
+        numberButton.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        numberButton.translatesAutoresizingMaskIntoConstraints = true
+        numberButton.tag = num
+        
+        numberButton.addTarget(self, action: #selector(numberInsert), for: .touchUpInside)
+        
+        
+        numberButtonArr?.append(numberButton)
+        self.view.addSubview(numberButton)
+    }
+    
+    @objc func numberInsert(sender: UIButton){
+        print(sender.tag)
     }
     
     
+   
     override func viewDidLoad() {
         super.viewDidLoad()
-        for num in 0 ... 9 {
-            
-            var height = 60
-            var width = 60
-            var x = 0
-            var y = 0
-            
-            if num < 1 { width = 145; y = 540; x = 30 }
-            else if num < 4 { y = 455 }
-            else if num < 7 { y = 370 }
-            else { y = 285 }
-            
-            if num%3 == 1 { x = 30 }
-            else if num%3 == 2 { x = 115 }
-            else { if num != 0 { x = 200 } }
-            
-            
-            let numberButton = UIButton()
-            numberButton.frame = CGRect(x: x, y: y, width: width, height: height)
-            numberButton.setTitle(String(num), for: .normal)
-            numberButton.setTitleColor(.systemBlue, for: .normal)
-            
-            numberButton.backgroundColor = UIColor(rgb: 0x494C4D)
-            numberButton.setBackgroundColor(UIColor(rgb: 0x656565), for: .highlighted)
-            
-            numberButton.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
-            numberButton.translatesAutoresizingMaskIntoConstraints = true
-            numberButton.tag = num
-            
-            numberButton.addTarget(self, action: #selector(numberInsert), for: .touchUpInside)
-            
-
-            numberButtonArr?.append(numberButton)
-            self.view.addSubview(numberButton)
-            
-        }
+        view.backgroundColor = UIColor.black
+        
+        for num in 0 ... 9 { creatingNumberButton(num) }
         
     
 
     
     }
     
-    @objc func numberInsert(sender: UIButton){
-        print(sender.tag)
-    }
+    
 
 }
 
