@@ -70,22 +70,13 @@ class ViewController: UIViewController {
                     validCharactersCount+=1
                     if currentChar == "." || currentChar == "," { pointCount += 1 }
                     if currentChar == "-" || currentChar == "+" { signCount += 1 }
-                    
                     if pointCount > 1 || signCount > 1 { answer = false; break }
                 }
-                
             }
             if validCharactersCount != string.count { answer = false }
-            
-                if signCount == 1 && string[0] != "+" { answer = false }
-                if signCount == 1 && string[1] == "." { answer = false }
+            if signCount == 1 && string[0] != "+" { answer = false }
+            if signCount == 1 && string[1] == "." { answer = false }
                 
-            var positionZero = 2
-            repeat {
-                    if string[0] == "0" && string [1] != "." && string[positionZero] != "0" { answer = false }
-                    positionZero += 1
-            }
-            while positionZero < string.count
         }
         return answer
     }
