@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import AVFoundation
+import AudioToolbox
 
 class ViewController: UIViewController {
     
-    @IBOutlet var numberButtonArr: [UIButton]!
+    var numberButtonArr: [UIButton]!
+//    @IBOutlet var numberButtonArr: [UIButton]!
 //    var numberButtonArr: Array<UIButton> = []
     
     fileprivate func creatingNumberButton(_ num: Int) {
@@ -50,8 +53,54 @@ class ViewController: UIViewController {
     }
     
     @objc func numberInsert(sender: UIButton){
+        //MARK: - ADD Functionality
+        
         print(sender.tag)
     }
+    
+    func stringIsNumber(string: String) -> Bool {
+        var answer = true
+        if string.count == 0 || string[0] == "." { answer = false }
+        else {
+            var validCharactersCount = 0
+            var signCount = 0
+            var pointCount = 0
+            for currentChar in string {
+                if currentChar >= "\u{0030}" && currentChar <= "\u{0039}" || currentChar ==  "." || currentChar == "," || currentChar == "-" || currentChar == "+" || currentChar == " " {
+                    validCharactersCount+=1
+                    if currentChar == "." || currentChar == "," { pointCount += 1 }
+                    if currentChar == "-" || currentChar == "+" { signCount += 1 }
+                    
+                    if pointCount > 1 || signCount > 1 { answer = false; break }
+                }
+                
+            }
+            if validCharactersCount != string.count { answer = false }
+            
+                if signCount == 1 && string[0] != "+" { answer = false }
+                if signCount == 1 && string[1] == "." { answer = false }
+                
+            var positionZero = 2
+            repeat {
+                    if string[0] == "0" && string [1] != "." && string[positionZero] != "0" { answer = false }
+                    positionZero += 1
+            }
+            while positionZero < string.count
+        }
+        return answer
+    }
+    
+    func notANumbetAlert(string: String){
+        if !stringIsNumber(string: string)
+        {
+            AudioServicesPlaySystemSound(SystemSoundID(4095))
+            let alert = UIAlertController(title: "Invalid format", message: "The data you entered is NOT a number", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Retry", style: .cancel) { (action) in }
+            alert.addAction(action)
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
     
     
    
@@ -61,8 +110,6 @@ class ViewController: UIViewController {
         
         for num in 0 ... 9 { creatingNumberButton(num) }
         
-    
-
     
     }
     
@@ -74,13 +121,12 @@ class ViewController: UIViewController {
 
 
 
-//MARK: RGB to UIColor
+//MARK: - RGB to UIColor
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int) {
         assert(red >= 0 && red <= 255, "Invalid red component")
         assert(green >= 0 && green <= 255, "Invalid green component")
         assert(blue >= 0 && blue <= 255, "Invalid blue component")
-
         self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
     }
 
@@ -93,6 +139,7 @@ extension UIColor {
    }
 }
 
+//MARK: - SET BGR color for State
 extension UIButton {
     private func imageWithColor(color: UIColor) -> UIImage? {
         let rect = CGRect(x: 0.0, y: 0.0, width: 1.0, height: 1.0)
@@ -110,5 +157,20 @@ extension UIButton {
 
     func setBackgroundColor(_ color: UIColor, for state: UIControl.State) {
         self.setBackgroundImage(imageWithColor(color: color), for: state)
+    }
+}
+
+//MARK: - Make STRING as ARRAY
+extension String {
+    var length: Int { return count }
+    subscript (i: Int) -> String { return self[i ..< i + 1] }
+    func substring(fromIndex: Int) -> String { return self[min(fromIndex, length) ..< length] }
+    func substring(toIndex: Int) -> String { return self[0 ..< max(0, toIndex)] }
+    subscript (r: Range<Int>) -> String {
+        let range = Range(uncheckedBounds: (lower: max(0, min(length, r.lowerBound)),
+                                            upper: min(length, max(0, r.upperBound))))
+        let start = index(startIndex, offsetBy: range.lowerBound)
+        let end = index(start, offsetBy: range.upperBound - range.lowerBound)
+        return String(self[start ..< end])
     }
 }
