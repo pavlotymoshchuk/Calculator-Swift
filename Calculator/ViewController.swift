@@ -14,9 +14,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     var numberButtonArr: [UIButton]!
     let insertResultTextField = UITextField()
+    let pointButton = UIButton()
+    let totalButton = UIButton()
+    let plusButton = UIButton()
+    let minusButton = UIButton()
+    let multiplyButton = UIButton()
+    let divideButton = UIButton()
+    let myCalculator = UIButton()
+    let signChangeButton = UIButton()
+    let clearButton = UIButton()
+    
 //    @IBOutlet var numberButtonArr: [UIButton]!
 //    var numberButtonArr: Array<UIButton> = []
     
+    //MARK: - Hiding keyboard by RETURN
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -48,47 +59,113 @@ class ViewController: UIViewController, UITextFieldDelegate {
             numberButton.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
             numberButton.translatesAutoresizingMaskIntoConstraints = true
             numberButton.tag = num
-            numberButton.addTarget(self, action: #selector(numberInsert), for: .touchUpInside)
+            numberButton.addTarget(self, action: #selector(numberButtonPress), for: .touchUpInside)
             
             numberButtonArr?.append(numberButton)
             self.view.addSubview(numberButton)
         }
     }
     
+    fileprivate func creatingFunctionalButtons(currentFunctionalButton: UIButton, x: Int, y: Int, title: String, backgroundColor: Int, backgroundColorHighlighted: Int, action: Selector, tag: Int) {
+        currentFunctionalButton.frame = CGRect(x: x, y: y, width: 60, height: 60)
+        currentFunctionalButton.setTitle(String(title), for: .normal)
+        currentFunctionalButton.titleLabel?.font = UIFont.systemFont(ofSize: 35)
+        currentFunctionalButton.setTitleColor(UIColor(rgb: 0xFFFFFF), for: .normal)
+        currentFunctionalButton.backgroundColor = UIColor(rgb: backgroundColor)
+        currentFunctionalButton.setBackgroundColor(UIColor(rgb: backgroundColorHighlighted), for: .highlighted)
+        currentFunctionalButton.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        currentFunctionalButton.translatesAutoresizingMaskIntoConstraints = true
+        currentFunctionalButton.addTarget(self, action: action, for: .touchUpInside)
+        currentFunctionalButton.tag = tag
+        self.view.addSubview(currentFunctionalButton)
+    }
+    
     fileprivate func creatingFunctionalElements() {
-        // Макс к-сть символів 7
         insertResultTextField.frame = CGRect(x: 30, y: 90, width: 315, height: 70)
         insertResultTextField.borderStyle = .none
         insertResultTextField.placeholder = "0"
         insertResultTextField.font = UIFont.systemFont(ofSize: 70, weight: .thin)
         insertResultTextField.textAlignment = .right
         insertResultTextField.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
-        
         self.view.addSubview(insertResultTextField)
+            
+        creatingFunctionalButtons(currentFunctionalButton: pointButton, x: 200, y: 540, title: ".", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 0)
+        creatingFunctionalButtons(currentFunctionalButton: totalButton, x: 285, y: 540, title: "=", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 1)
+        creatingFunctionalButtons(currentFunctionalButton: plusButton, x: 285, y: 455, title: "+", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 2)
+        creatingFunctionalButtons(currentFunctionalButton: minusButton, x: 285, y: 370, title: "-", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 3)
+        creatingFunctionalButtons(currentFunctionalButton: multiplyButton, x: 285, y: 285, title: "*", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 4)
+        creatingFunctionalButtons(currentFunctionalButton: divideButton, x: 285, y: 200, title: "/", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 5)
+        creatingFunctionalButtons(currentFunctionalButton: clearButton, x: 30, y: 200, title: "AC", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 6)
+        creatingFunctionalButtons(currentFunctionalButton: signChangeButton, x: 115, y: 200, title: "+/-", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 7)
+        creatingFunctionalButtons(currentFunctionalButton: myCalculator, x: 200, y: 200, title: "f(x)", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 8)
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        if insertResultTextField.text!.count > 7 {
+        if insertResultTextField.text!.count > 7 { // Макс к-сть символів 7
             alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
             insertResultTextField.text! = insertResultTextField.text![0 ..< 7]
         }
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        if !stringIsNumber(rawString: insertResultTextField.text!) {
+        if !stringIsNumber(rawString: insertResultTextField.text!) { //Перевірка на валідність
             alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
         }
     }
     
-    @objc func numberInsert(sender: UIButton){
-        //MARK: - ADD Functionality for number buttons
-        if insertResultTextField.text!.count < 7 {
+    
+    @objc func numberButtonPress(sender: UIButton) { // ADD Functionality for number buttons
+        print(sender.tag, "numberButtonPress")
+        if insertResultTextField.text!.count < 7 { // Макс к-сть символів 7
             insertResultTextField.text! += String(sender.tag)
         } else {
             alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
         }
-        
     }
+    
+    @objc func functionalButtonPress(sender: UIButton) { //MARK: - ADD FUNCTIONALITY
+        switch sender.tag { //MARK: - ADD FUNCTIONALITY
+        case 0:
+            print("pointButtonPress")
+            if insertResultTextField.text!.count < 7 { // Макс к-сть символів 7
+                insertResultTextField.text! += "."
+            } else {
+                alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
+            }
+        case 1:
+            print("totalButtonPress")
+        case 2:
+            print("plusButtonPress")
+        case 3:
+            print("minusButtonPress")
+        case 4:
+            print("multiplyButtonPress")
+        case 5:
+            print("divideButtonPress")
+        case 6:
+            print("clearButtonPress")
+            insertResultTextField.text! = ""
+        case 7:
+            print("signChangeButtonPress")
+            if insertResultTextField.text != nil {
+                let string = String(insertResultTextField.text!)
+                if string[0] == "+" {
+                    insertResultTextField.text! = string.replacingOccurrences(of: "+", with: "-")
+                } else if string[0] == "-" {
+                    insertResultTextField.text! = string.replacingOccurrences(of: "-", with: "+")
+                } else {
+                  insertResultTextField.text! = "-" + string
+                }
+            } else { insertResultTextField.text = "-" }
+        case 8:
+             print("myCalculatorButtonPress")
+        default:
+            print("SOMETHING WENT WRONG !!!!!!!!!!")
+        }
+    }
+    
+    
+    
     
     // MARK: - is string number?
     func stringIsNumber(rawString: String) -> Bool {
@@ -122,7 +199,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         return answer
     }
     
-    // MARK: - make the ALERT
+    // MARK: - make ALERT
     func alert(alertTitle: String, alertMessage: String, alertActionTitle: String)
     {
         AudioServicesPlaySystemSound(SystemSoundID(4095))
