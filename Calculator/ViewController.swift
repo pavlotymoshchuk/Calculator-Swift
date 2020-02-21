@@ -23,6 +23,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
     let myCalculator = UIButton()
     let signChangeButton = UIButton()
     let clearButton = UIButton()
+    var plusButtonActive = false
+    var minusButtonActive = false
+    var multiplyButtonActive = false
+    var divideButtonActive = false
+    var a = Float()
+    var b = Float()
     
 //    @IBOutlet var numberButtonArr: [UIButton]!
 //    var numberButtonArr: Array<UIButton> = []
@@ -40,10 +46,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
             var x = 0
             var y = 0
             
-            if num < 1          { width = 145; y = 540; x = 30 }
-            else if num < 4     { y = 455 }
-            else if num < 7     { y = 370 }
-            else                { y = 285 }
+            if num < 1          { width = 145; y = 585; x = 30 }
+            else if num < 4     { y = 500 }
+            else if num < 7     { y = 415 }
+            else                { y = 330 }
             
             if num%3 == 1       { x = 30 }
             else if num%3 == 2  { x = 115 }
@@ -81,29 +87,36 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     fileprivate func creatingFunctionalElements() {
-        insertResultTextField.frame = CGRect(x: 30, y: 90, width: 315, height: 70)
+        insertResultTextField.frame = CGRect(x: 30, y: 135, width: 315, height: 70)
         insertResultTextField.borderStyle = .none
         insertResultTextField.placeholder = "0"
         insertResultTextField.font = UIFont.systemFont(ofSize: 70, weight: .thin)
+        insertResultTextField.textColor = .white
         insertResultTextField.textAlignment = .right
         insertResultTextField.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        //MARK: - ADDING SWIPE RIGHT
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.handleGesture(gesture:)))
+        swipeRight.direction = .right
+        view.addGestureRecognizer(swipeRight)
+        
         self.view.addSubview(insertResultTextField)
+        insertResultTextField.delegate = self // MARK: - 🤔 put in viewDidLoad()???
             
-        creatingFunctionalButtons(currentFunctionalButton: pointButton, x: 200, y: 540, title: ".", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 0)
-        creatingFunctionalButtons(currentFunctionalButton: totalButton, x: 285, y: 540, title: "=", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 1)
-        creatingFunctionalButtons(currentFunctionalButton: plusButton, x: 285, y: 455, title: "+", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 2)
-        creatingFunctionalButtons(currentFunctionalButton: minusButton, x: 285, y: 370, title: "-", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 3)
-        creatingFunctionalButtons(currentFunctionalButton: multiplyButton, x: 285, y: 285, title: "*", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 4)
-        creatingFunctionalButtons(currentFunctionalButton: divideButton, x: 285, y: 200, title: "/", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 5)
-        creatingFunctionalButtons(currentFunctionalButton: clearButton, x: 30, y: 200, title: "AC", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 6)
-        creatingFunctionalButtons(currentFunctionalButton: signChangeButton, x: 115, y: 200, title: "+/-", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 7)
-        creatingFunctionalButtons(currentFunctionalButton: myCalculator, x: 200, y: 200, title: "f(x)", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 8)
+        creatingFunctionalButtons(currentFunctionalButton: pointButton, x: 200, y: 585, title: ".", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 0)
+        creatingFunctionalButtons(currentFunctionalButton: totalButton, x: 285, y: 585, title: "=", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 1)
+        creatingFunctionalButtons(currentFunctionalButton: plusButton, x: 285, y: 500, title: "+", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 2)
+        creatingFunctionalButtons(currentFunctionalButton: minusButton, x: 285, y: 415, title: "-", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 3)
+        creatingFunctionalButtons(currentFunctionalButton: multiplyButton, x: 285, y: 330, title: "*", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 4)
+        creatingFunctionalButtons(currentFunctionalButton: divideButton, x: 285, y: 245, title: "/", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 5)
+        creatingFunctionalButtons(currentFunctionalButton: clearButton, x: 30, y: 245, title: "AC", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 6)
+        creatingFunctionalButtons(currentFunctionalButton: signChangeButton, x: 115, y: 245, title: "+/-", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 7)
+        creatingFunctionalButtons(currentFunctionalButton: myCalculator, x: 200, y: 245, title: "f(x)", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 8)
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        if insertResultTextField.text!.count > 7 { // Макс к-сть символів 7
+        if insertResultTextField.text!.count > 15 { // Макс к-сть символів 7
             alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
-            insertResultTextField.text! = insertResultTextField.text![0 ..< 7]
+            insertResultTextField.text! = insertResultTextField.text![0 ..< 15]
         }
     }
     
@@ -113,38 +126,104 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    @objc func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
+        if gesture.direction == UISwipeGestureRecognizer.Direction.right && insertResultTextField.text!.count > 0 {
+            print("Swipe Right")
+            if let string = insertResultTextField.text
+            {
+                insertResultTextField.text! = string[0 ..< string.count-1]
+            }
+        }
+    }
     
     @objc func numberButtonPress(sender: UIButton) { // ADD Functionality for number buttons
         print(sender.tag, "numberButtonPress")
-        if insertResultTextField.text!.count < 7 { // Макс к-сть символів 7
+        if insertResultTextField.text!.count < 15 { // Макс к-сть символів 7
             insertResultTextField.text! += String(sender.tag)
         } else {
             alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
         }
     }
     
-    @objc func functionalButtonPress(sender: UIButton) { //MARK: - ADD FUNCTIONALITY
+    @objc func functionalButtonPress(sender: UIButton) {
         switch sender.tag { //MARK: - ADD FUNCTIONALITY
         case 0:
             print("pointButtonPress")
-            if insertResultTextField.text!.count < 7 { // Макс к-сть символів 7
+            if insertResultTextField.text!.count < 15 { // Макс к-сть символів 7
                 insertResultTextField.text! += "."
             } else {
                 alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
             }
         case 1:
             print("totalButtonPress")
+            if plusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                plusButtonActive = false
+                insertResultTextField.text! = String(a + Float(insertResultTextField.text!)!)
+                print("Result total:",insertResultTextField.text!)
+            }
+            if minusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                minusButtonActive = false
+                insertResultTextField.text! = String(a - Float(insertResultTextField.text!)!)
+                print("Result total:",insertResultTextField.text!)
+            }
+            if multiplyButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                multiplyButtonActive = false
+                insertResultTextField.text! = String(a * Float(insertResultTextField.text!)!)
+                print("Result total:",insertResultTextField.text!)
+            }
+            if divideButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                if Float(insertResultTextField.text!) != 0 {
+                    divideButtonActive = false
+                    insertResultTextField.text! = String(a / Float(insertResultTextField.text!)!)
+                    print("Result total:",insertResultTextField.text!)
+                } else {
+                    insertResultTextField.text! = "ERROR"
+                    print("Result total:",insertResultTextField.text!,"Dividing by 0 is impossible")
+                }
+            }
         case 2:
-            print("plusButtonPress")
+            print("plusButtonPress") //MARK: - TO DO
+            if stringIsNumber(rawString: insertResultTextField.text!) {
+                a = Float(insertResultTextField.text!)!
+                insertResultTextField.text! = ""
+                plusButtonActive = true
+            } else {
+                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            }
         case 3:
             print("minusButtonPress")
+            if stringIsNumber(rawString: insertResultTextField.text!) {
+                a = Float(insertResultTextField.text!)!
+                insertResultTextField.text! = ""
+                minusButtonActive = true
+            } else {
+                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            }
         case 4:
             print("multiplyButtonPress")
+            if stringIsNumber(rawString: insertResultTextField.text!) {
+                a = Float(insertResultTextField.text!)!
+                insertResultTextField.text! = ""
+                multiplyButtonActive = true
+            } else {
+                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            }
         case 5:
             print("divideButtonPress")
+            if stringIsNumber(rawString: insertResultTextField.text!) {
+                a = Float(insertResultTextField.text!)!
+                insertResultTextField.text! = ""
+                divideButtonActive = true
+            } else {
+                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            }
         case 6:
             print("clearButtonPress")
             insertResultTextField.text! = ""
+            plusButtonActive = false
+            minusButtonActive = false
+            multiplyButtonActive = false
+            divideButtonActive = false
         case 7:
             print("signChangeButtonPress")
             if insertResultTextField.text != nil {
@@ -158,14 +237,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 }
             } else { insertResultTextField.text = "-" }
         case 8:
-             print("myCalculatorButtonPress")
+            print("myCalculatorButtonPress")
+            
         default:
             print("SOMETHING WENT WRONG !!!!!!!!!!")
         }
     }
-    
-    
-    
     
     // MARK: - is string number?
     func stringIsNumber(rawString: String) -> Bool {
@@ -218,10 +295,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.view.frame.size.width = 400
         creatingNumberButtons()
         creatingFunctionalElements()
-        insertResultTextField.delegate = self // MARK: - 🤔 put in creatingFunctionalElements()???
     }
-    
-    
 
 }
 
