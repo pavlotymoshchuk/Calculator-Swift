@@ -238,6 +238,18 @@ class ViewController: UIViewController, UITextFieldDelegate {
             } else { insertResultTextField.text = "-" }
         case 8:
             print("myCalculatorButtonPress")
+            let picker = UIPickerView.init()
+            picker.delegate = self as! UIPickerViewDelegate
+            picker.backgroundColor = UIColor.white
+            picker.setValue(UIColor.black, forKey: "textColor")
+            picker.autoresizingMask = .flexibleWidth
+            picker.contentMode = .center
+            picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
+                self.view.addSubview(picker)
+            let toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 50))
+            toolBar.barStyle = .blackTranslucent
+            toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
+            self.view.addSubview(toolBar)
             
         default:
             print("SOMETHING WENT WRONG !!!!!!!!!!")
@@ -247,23 +259,23 @@ class ViewController: UIViewController, UITextFieldDelegate {
     // MARK: - is string number?
     func stringIsNumber(rawString: String) -> Bool {
         let string = rawString.replacingOccurrences(of: ",", with: ".")
-        var answer = true // MARK: - 🤔 remove???
+        var answer = true
         if string.count == 0 || string[0] == "." { answer = false }
         else {
             var validCharactersCount = 0
             var signCount = 0
             var pointCount = 0
             for currentChar in string {
-                if currentChar >= "\u{0030}" && currentChar <= "\u{0039}" || currentChar ==  "." /*|| currentChar == ","*/ || currentChar == "-" || currentChar == "+" || currentChar == " " {
+                if currentChar >= "\u{0030}" && currentChar <= "\u{0039}" || currentChar ==  "." || currentChar == "-" || currentChar == "+" || currentChar == " " {
                     validCharactersCount+=1
-                    if currentChar == "." /*|| currentChar == ","*/ { pointCount += 1 }
+                    if currentChar == "." { pointCount += 1 }
                     if currentChar == "-" || currentChar == "+" { signCount += 1 }
                     if pointCount > 1 || signCount > 1 { answer = false; break }
                 }
             }
             if validCharactersCount != string.count { answer = false }
             if signCount == 1 && string[0] != "+" && signCount == 1 && string[0] != "-" { answer = false }
-            if signCount == 1 && pointCount == 1 && string[1] == "." /*|| signCount == 1 && pointCount == 1 && string[1] == ","*/ { answer = false }
+            if signCount == 1 && pointCount == 1 && string[1] == "." { answer = false }
         }
         if answer {
             if let a = Float(string) { print("NUMBER:", a) }
