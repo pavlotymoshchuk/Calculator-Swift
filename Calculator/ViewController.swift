@@ -39,9 +39,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     }
     var currentMode = calcModes.defaultMode
     let calcTypes = ["default","coneMode","cylinderMode","pyramidMode"]
-    
-//    @IBOutlet var numberButtonArr: [UIButton]!
-//    var numberButtonArr: Array<UIButton> = []
+    let imageView = UIImageView()
+    let insertFirstValue = UITextField()
+    let insertSecondValue = UITextField()
     
     //MARK: - Hiding keyboard by RETURN
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -49,7 +49,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         return true
     }
     
-    fileprivate func creatingNumberButtons() {
+    func creatingNumberButtons() {
         for num in 0 ... 9 {
             var height = 60
             var width = 60
@@ -80,7 +80,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         }
     }
     
-    fileprivate func creatingFunctionalButtons(currentFunctionalButton: UIButton, x: Int, y: Int, title: String, backgroundColor: Int, backgroundColorHighlighted: Int, action: Selector, tag: Int) {
+    func creatingFunctionalButtons(currentFunctionalButton: UIButton, x: Int, y: Int, title: String, backgroundColor: Int, backgroundColorHighlighted: Int, action: Selector, tag: Int) {
         currentFunctionalButton.frame = CGRect(x: x, y: y, width: 60, height: 60)
         currentFunctionalButton.setTitle(String(title), for: .normal)
         currentFunctionalButton.titleLabel?.font = UIFont.systemFont(ofSize: 35)
@@ -94,7 +94,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         super.view.addSubview(currentFunctionalButton)
     }
     
-    fileprivate func insertResultTextFieldADD() {
+    func insertResultTextFieldADD() {
         insertResultTextField.frame = CGRect(x: 30, y: self.view.frame.height/6, width: self.view.frame.width-60, height: self.view.frame.height/8)
         insertResultTextField.borderStyle = .none
         insertResultTextField.placeholder = "0"
@@ -113,17 +113,54 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     
     func addIndividualCalculatorItems(param: Int) {
         print("param", param, "selected")
+        imageView.removeFromSuperview()
         //MARK: - TO DO
-//        switch param {
-//        case 1:
-//        case 2:
-//        case 3:
-//        default:
-//            return
-//        }
+        let name: String
+        switch param {
+        case 1:
+            name = "cone"
+            insertFirstValue.placeholder = "h"
+            insertSecondValue.placeholder = "r"
+        case 2:
+            name = "cylinder"
+            insertFirstValue.placeholder = "h"
+            insertSecondValue.placeholder = "r"
+        case 3:
+            name = "pyramid"
+            insertFirstValue.placeholder = "h"
+            insertSecondValue.placeholder = "s"
+        default:
+            return
+        }
+        let image = UIImage(named: name)
+        
+        imageView.image = image!
+        imageView.frame = CGRect(x: clearButton.frame.origin.x, y: 50, width: self.view.frame.size.width/5, height: self.view.frame.size.height/4)
+        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        imageView.translatesAutoresizingMaskIntoConstraints = true
+        imageView.contentMode = .scaleAspectFit
+        view.addSubview(imageView)
+        
+        insertFirstValue.frame = CGRect(x: signChangeButton.frame.origin.x+20 , y: imageView.frame.origin.y+30, width: self.view.frame.width/4, height: self.view.frame.height/16)
+        insertFirstValue.borderStyle = .line
+        insertFirstValue.font = UIFont.systemFont(ofSize: self.view.frame.height/16, weight: .thin)
+        insertFirstValue.textColor = .white
+        insertFirstValue.textAlignment = .left
+        insertFirstValue.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        insertFirstValue.delegate = self
+        self.view.addSubview(insertFirstValue)
+        
+        insertSecondValue.frame = CGRect(x: signChangeButton.frame.origin.x+20 , y: imageView.frame.origin.y+imageView.frame.size.height-30-self.view.frame.height/16, width: self.view.frame.width/4, height: self.view.frame.height/16)
+        insertSecondValue.borderStyle = .line
+        insertSecondValue.font = UIFont.systemFont(ofSize: self.view.frame.height/16, weight: .thin)
+        insertSecondValue.textColor = .white
+        insertSecondValue.textAlignment = .left
+        insertSecondValue.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        insertSecondValue.delegate = self
+        self.view.addSubview(insertSecondValue)
     }
     
-    fileprivate func creatingFunctionalElements() {
+    func creatingFunctionalElements() {
         insertResultTextFieldADD() //MARK: -  Creating insertResultTextField
         creatingFunctionalButtons(currentFunctionalButton: pointButton, x: 200, y: 585, title: ".", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 0)
         creatingFunctionalButtons(currentFunctionalButton: totalButton, x: 285, y: 585, title: "=", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 1)
@@ -137,15 +174,57 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        if insertResultTextField.text!.count > 15 { // Макс к-сть символів 7
-            alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
-            insertResultTextField.text! = insertResultTextField.text![0 ..< 15]
+        if currentMode == .defaultMode {
+            if insertResultTextField.text!.count > 15 { //MARK: - Макс к-сть символів 15
+                alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
+                insertResultTextField.text! = insertResultTextField.text![0 ..< 15]
+            }
+            if !stringIsNumber(rawString: insertResultTextField.text!) //MARK: - Відхилити введення недопустимих символів
+            {
+                if insertResultTextField.text!.count == 1 {
+                    insertResultTextField.text! = ""
+                } else if insertResultTextField.text!.count > 1 {
+                    insertResultTextField.text! = insertResultTextField.text![0 ..< insertResultTextField.text!.count-1]
+                }
+            }
+        } else {
+            if insertFirstValue.text!.count > 15 { //MARK: - Макс к-сть символів 15
+                alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
+                insertFirstValue.text! = insertFirstValue.text![0 ..< 15]
+            }
+            if !stringIsNumber(rawString: insertFirstValue.text!) //MARK: - Відхилити введення недопустимих символів
+            {
+                if insertFirstValue.text!.count == 1 {
+                    insertFirstValue.text! = ""
+                } else if insertFirstValue.text!.count > 1 {
+                    insertFirstValue.text! = insertFirstValue.text![0 ..< insertFirstValue.text!.count-1]
+                }
+            }
+            
+            if insertSecondValue.text!.count > 15 { //MARK: - Макс к-сть символів 15
+                alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
+                insertSecondValue.text! = insertSecondValue.text![0 ..< 15]
+            }
+            if !stringIsNumber(rawString: insertSecondValue.text!) //MARK: - Відхилити введення недопустимих символів
+            {
+                if insertSecondValue.text!.count == 1 {
+                    insertSecondValue.text! = ""
+                } else if insertSecondValue.text!.count > 1 {
+                    insertSecondValue.text! = insertSecondValue.text![0 ..< insertSecondValue.text!.count-1]
+                }
+            }
         }
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        if !stringIsNumber(rawString: insertResultTextField.text!) { //Перевірка на валідність
-            alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+        if currentMode == .defaultMode {
+            if !stringIsNumber(rawString: insertResultTextField.text!) { //MARK: - Перевірка на валідність
+                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            }
+        } else {
+            if !stringIsNumber(rawString: insertFirstValue.text!) && !stringIsNumber(rawString: insertSecondValue.text!)  { //MARK: - Перевірка на валідність
+                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            }
         }
     }
     
@@ -159,94 +238,134 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         }
     }
     
-    @objc func numberButtonPress(sender: UIButton) { // ADD Functionality for number buttons
+    @objc func numberButtonPress(sender: UIButton) { //MARK: - ADD Functionality for number buttons
         print(sender.tag, "numberButtonPress")
-        if insertResultTextField.text!.count < 15 { // Макс к-сть символів 7
-            insertResultTextField.text! += String(sender.tag)
+        if currentMode == .defaultMode {
+            if insertResultTextField.text!.count < 15 { //MARK: - Макс к-сть символів 15
+                if stringIsNumber(rawString: insertResultTextField.text! + String(sender.tag))
+                {
+                    insertResultTextField.text! += String(sender.tag)
+                }
+            } else {
+                alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
+            }
         } else {
-            alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
+            if insertFirstValue.text!.count < 15 { //MARK: - Макс к-сть символів 15
+                if stringIsNumber(rawString: insertFirstValue.text! + String(sender.tag))
+                {
+                    insertFirstValue.text! += String(sender.tag)
+                }
+            } else {
+                alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
+            }
         }
+        
     }
     
     @objc func functionalButtonPress(sender: UIButton) {
         switch sender.tag { //MARK: - ADD FUNCTIONALITY
         case 0:
             print("pointButtonPress")
-            if insertResultTextField.text!.count < 15 { // Макс к-сть символів 7
-                insertResultTextField.text! += "."
+            if insertResultTextField.text!.count < 15 { //MARK: - Макс к-сть символів 15
+                if stringIsNumber(rawString: insertResultTextField.text! + ".")
+                {
+                    insertResultTextField.text! += "."
+                }
             } else {
                 alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
             }
         case 1:
             print("totalButtonPress")
-            if plusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
-                plusButtonActive = false
-                insertResultTextField.text! = String(a + Float(insertResultTextField.text!)!)
-                print("Result total:",insertResultTextField.text!)
-            }
-            if minusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
-                minusButtonActive = false
-                insertResultTextField.text! = String(a - Float(insertResultTextField.text!)!)
-                print("Result total:",insertResultTextField.text!)
-            }
-            if multiplyButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
-                multiplyButtonActive = false
-                insertResultTextField.text! = String(a * Float(insertResultTextField.text!)!)
-                print("Result total:",insertResultTextField.text!)
-            }
-            if divideButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
-                if Float(insertResultTextField.text!) != 0 {
-                    divideButtonActive = false
-                    insertResultTextField.text! = String(a / Float(insertResultTextField.text!)!)
+            if currentMode == .defaultMode
+            {
+                if plusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                    plusButtonActive = false
+                    insertResultTextField.text! = String(a + Float(insertResultTextField.text!)!)
                     print("Result total:",insertResultTextField.text!)
-                } else {
-                    insertResultTextField.text! = "ERROR"
-                    print("Result total:",insertResultTextField.text!,"Dividing by 0 is impossible")
                 }
+                if minusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                    minusButtonActive = false
+                    insertResultTextField.text! = String(a - Float(insertResultTextField.text!)!)
+                    print("Result total:",insertResultTextField.text!)
+                }
+                if multiplyButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                    multiplyButtonActive = false
+                    insertResultTextField.text! = String(a * Float(insertResultTextField.text!)!)
+                    print("Result total:",insertResultTextField.text!)
+                }
+                if divideButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                    if Float(insertResultTextField.text!) != 0 {
+                        divideButtonActive = false
+                        insertResultTextField.text! = String(a / Float(insertResultTextField.text!)!)
+                        print("Result total:",insertResultTextField.text!)
+                    } else {
+                        insertResultTextField.text! = "ERROR"
+                        print("Result total:",insertResultTextField.text!,"Dividing by 0 is impossible")
+                    }
+                }
+            }
+            else
+            {
+                //MARK: - TO DO
             }
         case 2:
             print("plusButtonPress")
-            if stringIsNumber(rawString: insertResultTextField.text!) {
-                a = Float(insertResultTextField.text!)!
-                insertResultTextField.text! = ""
-                plusButtonActive = true
-            } else {
-                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            if currentMode == .defaultMode
+            {
+                if stringIsNumber(rawString: insertResultTextField.text!) {
+                    a = Float(insertResultTextField.text!)!
+                    insertResultTextField.text! = ""
+                    plusButtonActive = true
+                } else {
+                    alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+                }
             }
         case 3:
             print("minusButtonPress")
-            if stringIsNumber(rawString: insertResultTextField.text!) {
-                a = Float(insertResultTextField.text!)!
-                insertResultTextField.text! = ""
-                minusButtonActive = true
-            } else {
-                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            if currentMode == .defaultMode
+            {
+                if stringIsNumber(rawString: insertResultTextField.text!) {
+                    a = Float(insertResultTextField.text!)!
+                    insertResultTextField.text! = ""
+                    minusButtonActive = true
+                } else {
+                    alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+                }
             }
         case 4:
             print("multiplyButtonPress")
-            if stringIsNumber(rawString: insertResultTextField.text!) {
-                a = Float(insertResultTextField.text!)!
-                insertResultTextField.text! = ""
-                multiplyButtonActive = true
-            } else {
-                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            if currentMode == .defaultMode
+            {
+                if stringIsNumber(rawString: insertResultTextField.text!) {
+                    a = Float(insertResultTextField.text!)!
+                    insertResultTextField.text! = ""
+                    multiplyButtonActive = true
+                } else {
+                    alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+                }
             }
         case 5:
             print("divideButtonPress")
-            if stringIsNumber(rawString: insertResultTextField.text!) {
-                a = Float(insertResultTextField.text!)!
-                insertResultTextField.text! = ""
-                divideButtonActive = true
-            } else {
-                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            if currentMode == .defaultMode
+            {
+                if stringIsNumber(rawString: insertResultTextField.text!) {
+                    a = Float(insertResultTextField.text!)!
+                    insertResultTextField.text! = ""
+                    divideButtonActive = true
+                } else {
+                    alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+                }
             }
         case 6:
             print("clearButtonPress")
-            insertResultTextField.text! = ""
-            plusButtonActive = false
-            minusButtonActive = false
-            multiplyButtonActive = false
-            divideButtonActive = false
+            if currentMode == .defaultMode
+            {
+                insertResultTextField.text! = ""
+                plusButtonActive = false
+                minusButtonActive = false
+                multiplyButtonActive = false
+                divideButtonActive = false
+            }
         case 7:
             print("signChangeButtonPress")
             if insertResultTextField.text != nil {
@@ -260,7 +379,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                 }
             } else { insertResultTextField.text = "-" }
         case 8:
-            print("myCalculatorButtonPress") //MARK: - TO DO
+            print("myCalculatorButtonPress")
             picker = UIPickerView.init()
             picker.delegate = self as! UIPickerViewDelegate
             picker.backgroundColor = UIColor.black
@@ -270,7 +389,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             picker.frame = CGRect.init(x: 0, y: super.view.frame.size.height - 300, width: super.view.frame.size.width, height: 300)
             self.view.addSubview(picker)
             toolBar = UIToolbar.init(frame: CGRect.init(x: 0, y: super.view.frame.size.height - 350, width: super.view.frame.size.width, height: 50))
-            toolBar.barStyle = .blackTranslucent
+            toolBar.barStyle = .black
             toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
             self.view.addSubview(toolBar)
         default:
@@ -284,6 +403,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         
         switch currentMode {
         case .defaultMode:
+            imageView.removeFromSuperview()
+            insertFirstValue.removeFromSuperview()
+            insertSecondValue.removeFromSuperview()
+            
             insertResultTextFieldADD()
         case .coneMode:
             insertResultTextField.removeFromSuperview()
