@@ -10,9 +10,9 @@ import UIKit
 import AVFoundation
 import AudioToolbox
 
-class ViewController: UIViewController, UITextFieldDelegate {
+class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
-    var numberButtonArr: [UIButton]!
+    var numberButtonArr = [UIButton]()
     let insertResultTextField = UITextField()
     let pointButton = UIButton()
     let totalButton = UIButton()
@@ -29,6 +29,16 @@ class ViewController: UIViewController, UITextFieldDelegate {
     var divideButtonActive = false
     var a = Float()
     var b = Float()
+    var toolBar = UIToolbar()
+    var picker  = UIPickerView()
+    enum calcModes {
+        case defaultMode
+        case pyramidMode
+        case coneMode
+        case cylinderMode
+    }
+    var currentMode = calcModes.defaultMode
+    let calcTypes = ["default","coneMode","cylinderMode","pyramidMode"]
     
 //    @IBOutlet var numberButtonArr: [UIButton]!
 //    var numberButtonArr: Array<UIButton> = []
@@ -66,9 +76,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             numberButton.translatesAutoresizingMaskIntoConstraints = true
             numberButton.tag = num
             numberButton.addTarget(self, action: #selector(numberButtonPress), for: .touchUpInside)
-            
-            numberButtonArr?.append(numberButton)
-            self.view.addSubview(numberButton)
+            super.view.addSubview(numberButton)
         }
     }
     
@@ -83,14 +91,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
         currentFunctionalButton.translatesAutoresizingMaskIntoConstraints = true
         currentFunctionalButton.addTarget(self, action: action, for: .touchUpInside)
         currentFunctionalButton.tag = tag
-        self.view.addSubview(currentFunctionalButton)
+        super.view.addSubview(currentFunctionalButton)
     }
     
-    fileprivate func creatingFunctionalElements() {
-        insertResultTextField.frame = CGRect(x: 30, y: 135, width: 315, height: 70)
+    fileprivate func insertResultTextFieldADD() {
+        insertResultTextField.frame = CGRect(x: 30, y: self.view.frame.height/6, width: self.view.frame.width-60, height: self.view.frame.height/8)
         insertResultTextField.borderStyle = .none
         insertResultTextField.placeholder = "0"
-        insertResultTextField.font = UIFont.systemFont(ofSize: 70, weight: .thin)
+        insertResultTextField.font = UIFont.systemFont(ofSize: self.view.frame.height/8, weight: .thin)
         insertResultTextField.textColor = .white
         insertResultTextField.textAlignment = .right
         insertResultTextField.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
@@ -99,9 +107,24 @@ class ViewController: UIViewController, UITextFieldDelegate {
         swipeRight.direction = .right
         view.addGestureRecognizer(swipeRight)
         
-        self.view.addSubview(insertResultTextField)
-        insertResultTextField.delegate = self // MARK: - 🤔 put in viewDidLoad()???
-            
+        super.view.addSubview(insertResultTextField)
+        insertResultTextField.delegate = self
+    }
+    
+    func addIndividualCalculatorItems(param: Int) {
+        print("param", param, "selected")
+        //MARK: - TO DO
+//        switch param {
+//        case 1:
+//        case 2:
+//        case 3:
+//        default:
+//            return
+//        }
+    }
+    
+    fileprivate func creatingFunctionalElements() {
+        insertResultTextFieldADD() //MARK: -  Creating insertResultTextField
         creatingFunctionalButtons(currentFunctionalButton: pointButton, x: 200, y: 585, title: ".", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 0)
         creatingFunctionalButtons(currentFunctionalButton: totalButton, x: 285, y: 585, title: "=", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 1)
         creatingFunctionalButtons(currentFunctionalButton: plusButton, x: 285, y: 500, title: "+", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 2)
@@ -182,7 +205,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 }
             }
         case 2:
-            print("plusButtonPress") //MARK: - TO DO
+            print("plusButtonPress")
             if stringIsNumber(rawString: insertResultTextField.text!) {
                 a = Float(insertResultTextField.text!)!
                 insertResultTextField.text! = ""
@@ -237,26 +260,72 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 }
             } else { insertResultTextField.text = "-" }
         case 8:
-            print("myCalculatorButtonPress")
-            let picker = UIPickerView.init()
+            print("myCalculatorButtonPress") //MARK: - TO DO
+            picker = UIPickerView.init()
             picker.delegate = self as! UIPickerViewDelegate
-            picker.backgroundColor = UIColor.white
-            picker.setValue(UIColor.black, forKey: "textColor")
-            picker.autoresizingMask = .flexibleWidth
+            picker.backgroundColor = UIColor.black
+            picker.setValue(UIColor.white, forKey: "textColor")
+            picker.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
             picker.contentMode = .center
-            picker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
-                self.view.addSubview(picker)
-            let toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 50))
+            picker.frame = CGRect.init(x: 0, y: super.view.frame.size.height - 300, width: super.view.frame.size.width, height: 300)
+            self.view.addSubview(picker)
+            toolBar = UIToolbar.init(frame: CGRect.init(x: 0, y: super.view.frame.size.height - 350, width: super.view.frame.size.width, height: 50))
             toolBar.barStyle = .blackTranslucent
             toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
             self.view.addSubview(toolBar)
-            
         default:
             print("SOMETHING WENT WRONG !!!!!!!!!!")
         }
     }
     
-    // MARK: - is string number?
+    @objc func onDoneButtonTapped() { //MARK: - TO DO
+        toolBar.removeFromSuperview()
+        picker.removeFromSuperview()
+        
+        switch currentMode {
+        case .defaultMode:
+            insertResultTextFieldADD()
+        case .coneMode:
+            insertResultTextField.removeFromSuperview()
+            addIndividualCalculatorItems(param: 1)
+        case .cylinderMode:
+            insertResultTextField.removeFromSuperview()
+            addIndividualCalculatorItems(param: 2)
+        case .pyramidMode:
+            insertResultTextField.removeFromSuperview()
+            addIndividualCalculatorItems(param: 3)
+        }
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return calcTypes.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return calcTypes[row]
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        print("Selected", calcTypes[row], "calculator mode")
+        switch row {
+        case 0:
+            currentMode = .defaultMode
+        case 1:
+            currentMode = .coneMode
+        case 2:
+            currentMode = .cylinderMode
+        case 3:
+            currentMode = .pyramidMode
+        default:
+            currentMode = .defaultMode
+        }
+    }
+    
+    // MARK: - is string number
     func stringIsNumber(rawString: String) -> Bool {
         let string = rawString.replacingOccurrences(of: ",", with: ".")
         var answer = true
