@@ -42,6 +42,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     let imageView = UIImageView()
     let insertFirstValue = UITextField()
     let insertSecondValue = UITextField()
+    let resultLabel = UILabel()
+    let sideSurfaceArea = UILabel()
+    let totalSurfaceArea = UILabel()
+    let volumeFigure = UILabel()
     
     //MARK: - Hiding keyboard by RETURN
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -94,6 +98,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         super.view.addSubview(currentFunctionalButton)
     }
     
+    //MARK: - Додавання текстового поля для звичайного калькулятора
     func insertResultTextFieldADD() {
         insertResultTextField.frame = CGRect(x: 30, y: self.view.frame.height/6, width: self.view.frame.width-60, height: self.view.frame.height/8)
         insertResultTextField.borderStyle = .none
@@ -111,12 +116,12 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         insertResultTextField.delegate = self
     }
     
-    func addIndividualCalculatorItems(param: Int) {
-        print("param", param, "selected")
+    func addIndividualCalculatorItems(paramCalcItem: Int) {
+        print("param", paramCalcItem, "selected")
         imageView.removeFromSuperview()
         //MARK: - TO DO
         let name: String
-        switch param {
+        switch paramCalcItem {
         case 1:
             name = "cone"
             insertFirstValue.placeholder = "h"
@@ -216,9 +221,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         }
     }
     
+    //MARK: - Перевірка на валідність
     func textFieldDidEndEditing(_ textField: UITextField) {
         if currentMode == .defaultMode {
-            if !stringIsNumber(rawString: insertResultTextField.text!) { //MARK: - Перевірка на валідність
+            if !stringIsNumber(rawString: insertResultTextField.text!) {
                 alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
             }
         } else {
@@ -227,7 +233,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             }
         }
     }
-    
+    //MARK: - Swipe Right
     @objc func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
         if gesture.direction == UISwipeGestureRecognizer.Direction.right && insertResultTextField.text!.count > 0 {
             print("Swipe Right")
@@ -238,7 +244,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         }
     }
     
-    @objc func numberButtonPress(sender: UIButton) { //MARK: - ADD Functionality for number buttons
+    //MARK: - ADD Functionality for number buttons
+    @objc func numberButtonPress(sender: UIButton) {
         print(sender.tag, "numberButtonPress")
         if currentMode == .defaultMode {
             if insertResultTextField.text!.count < 15 { //MARK: - Макс к-сть символів 15
@@ -259,11 +266,76 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                 alert(alertTitle: "Unable to enter", alertMessage: "Max characters reached", alertActionTitle: "Retry")
             }
         }
-        
     }
     
+    //MARK: - Площа основи
+    func baseAreaFigureCalc() -> Float {
+        var baseAreaFigureValue = Float()
+        if let heightFigure =  Float(insertFirstValue.text!) {
+            if let anotherParamFigure =  Float(insertSecondValue.text!) {
+                switch currentMode {
+                case .coneMode:
+                    baseAreaFigureValue = powf(anotherParamFigure, 2.0)*Float.pi
+                case .cylinderMode:
+                    baseAreaFigureValue = powf(anotherParamFigure, 2.0)*Float.pi
+                case .pyramidMode:
+                    if heightFigure < anotherParamFigure {
+                        baseAreaFigureValue = (powf(anotherParamFigure, 2.0)-powf(heightFigure, 2.0))*2
+                    } else {
+                        alert(alertTitle: "This is not pyramid", alertMessage: "h must be less than s", alertActionTitle: "Retry")
+                    }
+                    
+                default:
+                    break
+                }
+            }
+        }
+        return baseAreaFigureValue
+    }
+    
+    //MARK: - Площа бічн. поверхні
+    func sideSurfaceAreaFigureCalc() -> Float {
+        var sideSurfaceAreaFigureValue = Float()
+        if let heightFigure =  Float(insertFirstValue.text!) {
+            if let anotherParamFigure =  Float(insertSecondValue.text!) {
+                switch currentMode {
+                case .coneMode:
+                    sideSurfaceAreaFigureValue = 0.0 //MARK: - TO DO
+                case .cylinderMode:
+                    sideSurfaceAreaFigureValue = heightFigure*2*Float.pi*anotherParamFigure
+                case .pyramidMode:
+                    sideSurfaceAreaFigureValue = 0.0 //MARK: - TO DO
+                default:
+                    break
+                }
+            }
+        }
+        return sideSurfaceAreaFigureValue
+    }
+    
+    //MARK: - Об'єм фігури
+    func volumeFigureCalc() -> Float {
+        var volumeFigureValue = Float()
+        if let heightFigure =  Float(insertFirstValue.text!) {
+            if let anotherParamFigure =  Float(insertSecondValue.text!) {
+                switch currentMode {
+                case .coneMode:
+                    volumeFigureValue = heightFigure*baseAreaFigureCalc()/3
+                case .cylinderMode:
+                    volumeFigureValue = heightFigure*baseAreaFigureCalc()
+                case .pyramidMode:
+                    volumeFigureValue = heightFigure*baseAreaFigureCalc()/3
+                default:
+                    break
+                }
+            }
+        }
+        return volumeFigureValue
+    }
+    
+    //MARK: - ADD FUNCTIONALITY
     @objc func functionalButtonPress(sender: UIButton) {
-        switch sender.tag { //MARK: - ADD FUNCTIONALITY
+        switch sender.tag {
         case 0:
             print("pointButtonPress")
             if insertResultTextField.text!.count < 15 { //MARK: - Макс к-сть символів 15
@@ -306,8 +378,32 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             }
             else
             {
+                resultLabel.frame = CGRect(x: insertFirstValue.frame.origin.x+insertFirstValue.frame.size.width+20, y: 50, width: self.view.frame.width/3, height: self.view.frame.height/25)
+                sideSurfaceArea.frame = CGRect(x: insertFirstValue.frame.origin.x+insertFirstValue.frame.size.width+20, y: self.resultLabel.frame.origin.y+self.resultLabel.frame.size.height+20, width: self.view.frame.width/3, height: self.view.frame.height/25)
+                totalSurfaceArea.frame = CGRect(x: insertFirstValue.frame.origin.x+insertFirstValue.frame.size.width+20, y: self.sideSurfaceArea.frame.origin.y+self.sideSurfaceArea.frame.size.height+20, width: self.view.frame.width/3, height: self.view.frame.height/25)
+                volumeFigure.frame = CGRect(x: insertFirstValue.frame.origin.x+insertFirstValue.frame.size.width+20, y: self.totalSurfaceArea.frame.origin.y+self.totalSurfaceArea.frame.size.height+20, width: self.view.frame.width/3, height: self.view.frame.height/25)
+                
+                resultLabel.font = UIFont.systemFont(ofSize: self.view.frame.height/30, weight: .light)
+                sideSurfaceArea.font = UIFont.systemFont(ofSize: self.view.frame.height/30, weight: .light)
+                totalSurfaceArea.font = UIFont.systemFont(ofSize: self.view.frame.height/30, weight: .light)
+                volumeFigure.font = UIFont.systemFont(ofSize: self.view.frame.height/30, weight: .light)
+                
+                resultLabel.textAlignment = .center
+                
+                self.view.addSubview(resultLabel)
+                self.view.addSubview(sideSurfaceArea)
+                self.view.addSubview(totalSurfaceArea)
+                self.view.addSubview(volumeFigure)
                 //MARK: - TO DO
-            }
+                resultLabel.text = "Result:"
+                sideSurfaceArea.text = "S^side =" + String(sideSurfaceAreaFigureCalc())
+                if currentMode == .cylinderMode {
+                    totalSurfaceArea.text = "S^total =" + String(sideSurfaceAreaFigureCalc()+2*baseAreaFigureCalc())
+                } else {
+                    totalSurfaceArea.text = "S^total =" + String(sideSurfaceAreaFigureCalc()+baseAreaFigureCalc())
+                }
+                volumeFigure.text = "V = " + String(volumeFigureCalc())
+        }
         case 2:
             print("plusButtonPress")
             if currentMode == .defaultMode
@@ -401,22 +497,37 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         toolBar.removeFromSuperview()
         picker.removeFromSuperview()
         
-        switch currentMode {
+        switch currentMode { //MARK: - Переключення режимів
         case .defaultMode:
             imageView.removeFromSuperview()
             insertFirstValue.removeFromSuperview()
             insertSecondValue.removeFromSuperview()
-            
+            resultLabel.removeFromSuperview()
+            sideSurfaceArea.removeFromSuperview()
+            totalSurfaceArea.removeFromSuperview()
+            volumeFigure.removeFromSuperview()
             insertResultTextFieldADD()
         case .coneMode:
             insertResultTextField.removeFromSuperview()
-            addIndividualCalculatorItems(param: 1)
+            addIndividualCalculatorItems(paramCalcItem: 1)
+            resultLabel.removeFromSuperview()
+            sideSurfaceArea.removeFromSuperview()
+            totalSurfaceArea.removeFromSuperview()
+            volumeFigure.removeFromSuperview()
         case .cylinderMode:
             insertResultTextField.removeFromSuperview()
-            addIndividualCalculatorItems(param: 2)
+            addIndividualCalculatorItems(paramCalcItem: 2)
+            resultLabel.removeFromSuperview()
+            sideSurfaceArea.removeFromSuperview()
+            totalSurfaceArea.removeFromSuperview()
+            volumeFigure.removeFromSuperview()
         case .pyramidMode:
             insertResultTextField.removeFromSuperview()
-            addIndividualCalculatorItems(param: 3)
+            addIndividualCalculatorItems(paramCalcItem: 3)
+            resultLabel.removeFromSuperview()
+            sideSurfaceArea.removeFromSuperview()
+            totalSurfaceArea.removeFromSuperview()
+            volumeFigure.removeFromSuperview()
         }
     }
     
