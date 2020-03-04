@@ -46,6 +46,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     let sideSurfaceArea = UILabel()
     let totalSurfaceArea = UILabel()
     let volumeFigure = UILabel()
+    let flexible: UIView.AutoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
     
     //MARK: - Hiding keyboard by RETURN
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -76,7 +77,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             numberButton.setTitleColor(UIColor(rgb: 0xFFFFFF), for: .normal)
             numberButton.backgroundColor = UIColor(rgb: 0x494C4D)
             numberButton.setBackgroundColor(UIColor(rgb: 0x858585), for: .highlighted)
-            numberButton.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+            numberButton.autoresizingMask = flexible
             numberButton.translatesAutoresizingMaskIntoConstraints = true
             numberButton.tag = num
             numberButton.addTarget(self, action: #selector(numberButtonPress), for: .touchUpInside)
@@ -91,7 +92,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         currentFunctionalButton.setTitleColor(UIColor(rgb: 0xFFFFFF), for: .normal)
         currentFunctionalButton.backgroundColor = UIColor(rgb: backgroundColor)
         currentFunctionalButton.setBackgroundColor(UIColor(rgb: backgroundColorHighlighted), for: .highlighted)
-        currentFunctionalButton.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        currentFunctionalButton.autoresizingMask = flexible
         currentFunctionalButton.translatesAutoresizingMaskIntoConstraints = true
         currentFunctionalButton.addTarget(self, action: action, for: .touchUpInside)
         currentFunctionalButton.tag = tag
@@ -106,7 +107,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         insertResultTextField.font = UIFont.systemFont(ofSize: self.view.frame.height/8, weight: .thin)
         insertResultTextField.textColor = .white
         insertResultTextField.textAlignment = .right
-        insertResultTextField.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        insertResultTextField.autoresizingMask = flexible
         //MARK: - ADDING SWIPE RIGHT
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.handleGesture(gesture:)))
         swipeRight.direction = .right
@@ -116,21 +117,20 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         insertResultTextField.delegate = self
     }
     
-    func addIndividualCalculatorItems(paramCalcItem: Int) {
-        print("param", paramCalcItem, "selected")
+    func addIndividualCalculatorItems(paramCalcItem: calcModes) {
+        print("param", calcModes.self, "selected")
         imageView.removeFromSuperview()
-        //MARK: - TO DO
         let name: String
         switch paramCalcItem {
-        case 1:
+        case .coneMode:
             name = "cone"
             insertFirstValue.placeholder = "h"
             insertSecondValue.placeholder = "r"
-        case 2:
+        case .cylinderMode:
             name = "cylinder"
             insertFirstValue.placeholder = "h"
             insertSecondValue.placeholder = "r"
-        case 3:
+        case .pyramidMode:
             name = "pyramid"
             insertFirstValue.placeholder = "h"
             insertSecondValue.placeholder = "s"
@@ -271,9 +271,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     //MARK: - Площа основи
     func baseAreaFigureCalc() -> Float {
         var baseAreaFigureValue = Float()
-        if let heightFigure =  Float(insertFirstValue.text!) {
-            if let anotherParamFigure =  Float(insertSecondValue.text!) {
-                switch currentMode {
+        if let heightFigure =  Float(insertFirstValue.text!), let anotherParamFigure = Float(insertSecondValue.text!) {
+            switch currentMode {
                 case .coneMode:
                     baseAreaFigureValue = powf(anotherParamFigure, 2.0)*Float.pi
                 case .cylinderMode:
@@ -284,10 +283,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                     } else {
                         alert(alertTitle: "This is not pyramid", alertMessage: "h must be less than s", alertActionTitle: "Retry")
                     }
-                    
                 default:
                     break
-                }
             }
         }
         return baseAreaFigureValue
@@ -296,8 +293,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     //MARK: - Площа бічн. поверхні
     func sideSurfaceAreaFigureCalc() -> Float {
         var sideSurfaceAreaFigureValue = Float()
-        if let heightFigure =  Float(insertFirstValue.text!) {
-            if let anotherParamFigure =  Float(insertSecondValue.text!) {
+        if let heightFigure =  Float(insertFirstValue.text!), let anotherParamFigure =  Float(insertSecondValue.text!) {
                 switch currentMode {
                 case .coneMode:
                     sideSurfaceAreaFigureValue = 0.0 //MARK: - TO DO
@@ -308,7 +304,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                 default:
                     break
                 }
-            }
         }
         return sideSurfaceAreaFigureValue
     }
@@ -316,18 +311,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     //MARK: - Об'єм фігури
     func volumeFigureCalc() -> Float {
         var volumeFigureValue = Float()
-        if let heightFigure =  Float(insertFirstValue.text!) {
-            if let anotherParamFigure =  Float(insertSecondValue.text!) {
-                switch currentMode {
-                case .coneMode:
-                    volumeFigureValue = heightFigure*baseAreaFigureCalc()/3
-                case .cylinderMode:
-                    volumeFigureValue = heightFigure*baseAreaFigureCalc()
-                case .pyramidMode:
-                    volumeFigureValue = heightFigure*baseAreaFigureCalc()/3
-                default:
-                    break
-                }
+        if let heightFigure = Float(insertFirstValue.text!), let _ = Float(insertSecondValue.text!) {
+            switch currentMode {
+            case .coneMode:
+                volumeFigureValue = heightFigure*baseAreaFigureCalc()/3
+            case .cylinderMode:
+                volumeFigureValue = heightFigure*baseAreaFigureCalc()
+            case .pyramidMode:
+                volumeFigureValue = heightFigure*baseAreaFigureCalc()/3
+            default:
+                break
             }
         }
         return volumeFigureValue
@@ -350,31 +343,33 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             print("totalButtonPress")
             if currentMode == .defaultMode
             {
+                var c: Float = 0.0
                 if plusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
                     plusButtonActive = false
-                    insertResultTextField.text! = String(a + Float(insertResultTextField.text!)!)
+                    c = a + Float(insertResultTextField.text!)!
                     print("Result total:",insertResultTextField.text!)
                 }
                 if minusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
                     minusButtonActive = false
-                    insertResultTextField.text! = String(a - Float(insertResultTextField.text!)!)
+                    c = a - Float(insertResultTextField.text!)!
                     print("Result total:",insertResultTextField.text!)
                 }
                 if multiplyButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
                     multiplyButtonActive = false
-                    insertResultTextField.text! = String(a * Float(insertResultTextField.text!)!)
+                    c = a * Float(insertResultTextField.text!)!
                     print("Result total:",insertResultTextField.text!)
                 }
                 if divideButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
                     if Float(insertResultTextField.text!) != 0 {
                         divideButtonActive = false
-                        insertResultTextField.text! = String(a / Float(insertResultTextField.text!)!)
+                        c = a / Float(insertResultTextField.text!)!
                         print("Result total:",insertResultTextField.text!)
                     } else {
                         insertResultTextField.text! = "ERROR"
                         print("Result total:",insertResultTextField.text!,"Dividing by 0 is impossible")
                     }
                 }
+                insertResultTextField.text! = c.truncatingRemainder(dividingBy: 1) > 0.00000000000000000001 ?  String(c) : String(Int(c))
             }
             else
             {
@@ -388,13 +383,23 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                 totalSurfaceArea.font = UIFont.systemFont(ofSize: self.view.frame.height/30, weight: .light)
                 volumeFigure.font = UIFont.systemFont(ofSize: self.view.frame.height/30, weight: .light)
                 
+                resultLabel.textColor = .white
+                sideSurfaceArea.textColor = .white
+                totalSurfaceArea.textColor = .white
+                volumeFigure.textColor = .white
+                
                 resultLabel.textAlignment = .center
+                
+                resultLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+                sideSurfaceArea.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+                totalSurfaceArea.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+                volumeFigure.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
                 
                 self.view.addSubview(resultLabel)
                 self.view.addSubview(sideSurfaceArea)
                 self.view.addSubview(totalSurfaceArea)
                 self.view.addSubview(volumeFigure)
-                //MARK: - TO DO
+                
                 resultLabel.text = "Result:"
                 sideSurfaceArea.text = "S^side =" + String(sideSurfaceAreaFigureCalc())
                 if currentMode == .cylinderMode {
@@ -477,7 +482,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         case 8:
             print("myCalculatorButtonPress")
             picker = UIPickerView.init()
-            picker.delegate = self as! UIPickerViewDelegate
+            picker.delegate = self as UIPickerViewDelegate
             picker.backgroundColor = UIColor.black
             picker.setValue(UIColor.white, forKey: "textColor")
             picker.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
@@ -493,6 +498,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         }
     }
     
+    fileprivate func removingLabels() {
+        resultLabel.removeFromSuperview()
+        sideSurfaceArea.removeFromSuperview()
+        totalSurfaceArea.removeFromSuperview()
+        volumeFigure.removeFromSuperview()
+    }
+    
     @objc func onDoneButtonTapped() { //MARK: - TO DO
         toolBar.removeFromSuperview()
         picker.removeFromSuperview()
@@ -502,32 +514,12 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             imageView.removeFromSuperview()
             insertFirstValue.removeFromSuperview()
             insertSecondValue.removeFromSuperview()
-            resultLabel.removeFromSuperview()
-            sideSurfaceArea.removeFromSuperview()
-            totalSurfaceArea.removeFromSuperview()
-            volumeFigure.removeFromSuperview()
+            removingLabels()
             insertResultTextFieldADD()
-        case .coneMode:
+        case .coneMode,.cylinderMode,.pyramidMode:
             insertResultTextField.removeFromSuperview()
-            addIndividualCalculatorItems(paramCalcItem: 1)
-            resultLabel.removeFromSuperview()
-            sideSurfaceArea.removeFromSuperview()
-            totalSurfaceArea.removeFromSuperview()
-            volumeFigure.removeFromSuperview()
-        case .cylinderMode:
-            insertResultTextField.removeFromSuperview()
-            addIndividualCalculatorItems(paramCalcItem: 2)
-            resultLabel.removeFromSuperview()
-            sideSurfaceArea.removeFromSuperview()
-            totalSurfaceArea.removeFromSuperview()
-            volumeFigure.removeFromSuperview()
-        case .pyramidMode:
-            insertResultTextField.removeFromSuperview()
-            addIndividualCalculatorItems(paramCalcItem: 3)
-            resultLabel.removeFromSuperview()
-            sideSurfaceArea.removeFromSuperview()
-            totalSurfaceArea.removeFromSuperview()
-            volumeFigure.removeFromSuperview()
+            addIndividualCalculatorItems(paramCalcItem: currentMode)
+            removingLabels()
         }
     }
     
