@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C765A44624105359006E0D65 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C765A44524105359006E0D65 /* NotificationCenter.framework */; };
+		C765A44924105359006E0D65 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C765A44824105359006E0D65 /* TodayViewController.swift */; };
+		C765A44C24105359006E0D65 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C765A44A24105359006E0D65 /* MainInterface.storyboard */; };
 		C7A69DF723F2D8A9008EBAE3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A69DF623F2D8A9008EBAE3 /* AppDelegate.swift */; };
 		C7A69DF923F2D8A9008EBAE3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A69DF823F2D8A9008EBAE3 /* SceneDelegate.swift */; };
 		C7A69DFB23F2D8A9008EBAE3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A69DFA23F2D8A9008EBAE3 /* ViewController.swift */; };
@@ -36,6 +39,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C765A44324105359006E0D65 /* iCalc widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "iCalc widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C765A44524105359006E0D65 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		C765A44824105359006E0D65 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
+		C765A44B24105359006E0D65 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		C765A44D24105359006E0D65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C765A4552410541B006E0D65 /* iCalc widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "iCalc widget.entitlements"; sourceTree = "<group>"; };
 		C7A69DF323F2D8A9008EBAE3 /* iCalc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iCalc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A69DF623F2D8A9008EBAE3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C7A69DF823F2D8A9008EBAE3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -55,6 +64,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C765A44024105359006E0D65 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C765A44624105359006E0D65 /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C7A69DF023F2D8A9008EBAE3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -79,12 +96,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C765A44424105359006E0D65 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C765A44524105359006E0D65 /* NotificationCenter.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C765A44724105359006E0D65 /* iCalc widget */ = {
+			isa = PBXGroup;
+			children = (
+				C765A4552410541B006E0D65 /* iCalc widget.entitlements */,
+				C765A44824105359006E0D65 /* TodayViewController.swift */,
+				C765A44A24105359006E0D65 /* MainInterface.storyboard */,
+				C765A44D24105359006E0D65 /* Info.plist */,
+			);
+			path = "iCalc widget";
+			sourceTree = "<group>";
+		};
 		C7A69DEA23F2D8A9008EBAE3 = {
 			isa = PBXGroup;
 			children = (
 				C7A69DF523F2D8A9008EBAE3 /* Calculator */,
 				C7A69E0F23F2D8AB008EBAE3 /* CalculatorTests */,
 				C7A69E1A23F2D8AB008EBAE3 /* CalculatorUITests */,
+				C765A44724105359006E0D65 /* iCalc widget */,
+				C765A44424105359006E0D65 /* Frameworks */,
 				C7A69DF423F2D8A9008EBAE3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,6 +133,7 @@
 				C7A69DF323F2D8A9008EBAE3 /* iCalc.app */,
 				C7A69E0C23F2D8AB008EBAE3 /* CalculatorTests.xctest */,
 				C7A69E1723F2D8AB008EBAE3 /* CalculatorUITests.xctest */,
+				C765A44324105359006E0D65 /* iCalc widget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,6 +175,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		C765A44224105359006E0D65 /* iCalc widget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C765A45424105359006E0D65 /* Build configuration list for PBXNativeTarget "iCalc widget" */;
+			buildPhases = (
+				C765A43F24105359006E0D65 /* Sources */,
+				C765A44024105359006E0D65 /* Frameworks */,
+				C765A44124105359006E0D65 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "iCalc widget";
+			productName = "iCalc widget";
+			productReference = C765A44324105359006E0D65 /* iCalc widget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		C7A69DF223F2D8A9008EBAE3 /* iCalc */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C7A69E2023F2D8AB008EBAE3 /* Build configuration list for PBXNativeTarget "iCalc" */;
@@ -199,6 +255,9 @@
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = "Павло Тимощук";
 				TargetAttributes = {
+					C765A44224105359006E0D65 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
 					C7A69DF223F2D8A9008EBAE3 = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
@@ -228,11 +287,20 @@
 				C7A69DF223F2D8A9008EBAE3 /* iCalc */,
 				C7A69E0B23F2D8AB008EBAE3 /* CalculatorTests */,
 				C7A69E1623F2D8AB008EBAE3 /* CalculatorUITests */,
+				C765A44224105359006E0D65 /* iCalc widget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C765A44124105359006E0D65 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C765A44C24105359006E0D65 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C7A69DF123F2D8A9008EBAE3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -260,6 +328,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C765A43F24105359006E0D65 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C765A44924105359006E0D65 /* TodayViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C7A69DEF23F2D8A9008EBAE3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -303,6 +379,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		C765A44A24105359006E0D65 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C765A44B24105359006E0D65 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
 		C7A69DFC23F2D8A9008EBAE3 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -322,6 +406,50 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		C765A45224105359006E0D65 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "iCalc widget/iCalc widget.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
+				DEVELOPMENT_TEAM = TKCHBW3N32;
+				INFOPLIST_FILE = "iCalc widget/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "tymoshchuk-Inc.Calculator.iCalc-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C765A45324105359006E0D65 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "iCalc widget/iCalc widget.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
+				DEVELOPMENT_TEAM = TKCHBW3N32;
+				INFOPLIST_FILE = "iCalc widget/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "tymoshchuk-Inc.Calculator.iCalc-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		C7A69E1E23F2D8AB008EBAE3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -567,6 +695,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C765A45424105359006E0D65 /* Build configuration list for PBXNativeTarget "iCalc widget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C765A45224105359006E0D65 /* Debug */,
+				C765A45324105359006E0D65 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C7A69DEE23F2D8A9008EBAE3 /* Build configuration list for PBXProject "Calculator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

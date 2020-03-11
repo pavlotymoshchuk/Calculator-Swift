@@ -27,8 +27,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     var minusButtonActive = false
     var multiplyButtonActive = false
     var divideButtonActive = false
-    var a = Float()
-    var b = Float()
+    var a = Double()
+    var b = Double()
     var toolBar = UIToolbar()
     var picker  = UIPickerView()
     enum calcModes {
@@ -56,7 +56,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     
     func creatingNumberButtons() {
         for num in 0 ... 9 {
-            var height = 60
+            let height = 60
             var width = 60
             var x = 0
             var y = 0
@@ -78,7 +78,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             numberButton.backgroundColor = UIColor(rgb: 0x494C4D)
             numberButton.setBackgroundColor(UIColor(rgb: 0x858585), for: .highlighted)
             numberButton.autoresizingMask = flexible
-            numberButton.translatesAutoresizingMaskIntoConstraints = true
             numberButton.tag = num
             numberButton.addTarget(self, action: #selector(numberButtonPress), for: .touchUpInside)
             super.view.addSubview(numberButton)
@@ -93,7 +92,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         currentFunctionalButton.backgroundColor = UIColor(rgb: backgroundColor)
         currentFunctionalButton.setBackgroundColor(UIColor(rgb: backgroundColorHighlighted), for: .highlighted)
         currentFunctionalButton.autoresizingMask = flexible
-        currentFunctionalButton.translatesAutoresizingMaskIntoConstraints = true
         currentFunctionalButton.addTarget(self, action: action, for: .touchUpInside)
         currentFunctionalButton.tag = tag
         super.view.addSubview(currentFunctionalButton)
@@ -101,7 +99,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     
     //MARK: - Додавання текстового поля для звичайного калькулятора
     func insertResultTextFieldADD() {
-        insertResultTextField.frame = CGRect(x: 30, y: self.view.frame.height/6, width: self.view.frame.width-60, height: self.view.frame.height/8)
+        insertResultTextField.frame = CGRect(x: 30, y: self.view.frame.height/6, width: (17/18*self.view.frame.width)-60, height: self.view.frame.height/8)
         insertResultTextField.borderStyle = .none
         insertResultTextField.placeholder = "0"
         insertResultTextField.font = UIFont.systemFont(ofSize: self.view.frame.height/8, weight: .thin)
@@ -118,7 +116,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     }
     
     func addIndividualCalculatorItems(paramCalcItem: calcModes) {
-        print("param", calcModes.self, "selected")
+        print("param", paramCalcItem, "selected")
         imageView.removeFromSuperview()
         let name: String
         switch paramCalcItem {
@@ -141,8 +139,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         
         imageView.image = image!
         imageView.frame = CGRect(x: clearButton.frame.origin.x, y: 50, width: self.view.frame.size.width/5, height: self.view.frame.size.height/4)
-        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
-        imageView.translatesAutoresizingMaskIntoConstraints = true
+        imageView.autoresizingMask = flexible
         imageView.contentMode = .scaleAspectFit
         view.addSubview(imageView)
         
@@ -151,7 +148,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         insertFirstValue.font = UIFont.systemFont(ofSize: self.view.frame.height/16, weight: .thin)
         insertFirstValue.textColor = .white
         insertFirstValue.textAlignment = .left
-        insertFirstValue.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        insertFirstValue.autoresizingMask = flexible
         insertFirstValue.delegate = self
         self.view.addSubview(insertFirstValue)
         
@@ -160,7 +157,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         insertSecondValue.font = UIFont.systemFont(ofSize: self.view.frame.height/16, weight: .thin)
         insertSecondValue.textColor = .white
         insertSecondValue.textAlignment = .left
-        insertSecondValue.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        insertSecondValue.autoresizingMask = flexible
         insertSecondValue.delegate = self
         self.view.addSubview(insertSecondValue)
     }
@@ -224,11 +221,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     //MARK: - Перевірка на валідність
     func textFieldDidEndEditing(_ textField: UITextField) {
         if currentMode == .defaultMode {
-            if !stringIsNumber(rawString: insertResultTextField.text!) {
+            if !stringIsNumber(rawString: insertResultTextField.text!) && insertResultTextField.text! != ""  {
                 alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
             }
         } else {
-            if !stringIsNumber(rawString: insertFirstValue.text!) && !stringIsNumber(rawString: insertSecondValue.text!)  { //MARK: - Перевірка на валідність
+            if !stringIsNumber(rawString: insertFirstValue.text!) && !stringIsNumber(rawString: insertSecondValue.text!) &&  insertFirstValue.text! != "" && insertSecondValue.text! != "" { //MARK: - Перевірка на валідність
                 alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
             }
         }
@@ -249,8 +246,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         print(sender.tag, "numberButtonPress")
         if currentMode == .defaultMode {
             if insertResultTextField.text!.count < 15 { //MARK: - Макс к-сть символів 15
-                if stringIsNumber(rawString: insertResultTextField.text! + String(sender.tag))
-                {
+                if stringIsNumber(rawString: insertResultTextField.text! + String(sender.tag)) {
                     insertResultTextField.text! += String(sender.tag)
                 }
             } else {
@@ -258,8 +254,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             }
         } else {
             if insertFirstValue.text!.count < 15 { //MARK: - Макс к-сть символів 15
-                if stringIsNumber(rawString: insertFirstValue.text! + String(sender.tag))
-                {
+                if stringIsNumber(rawString: insertFirstValue.text! + String(sender.tag)) {
                     insertFirstValue.text! += String(sender.tag)
                 }
             } else {
@@ -269,20 +264,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     }
     
     //MARK: - Площа основи
-    func baseAreaFigureCalc() -> Float {
-        var baseAreaFigureValue = Float()
-        if let heightFigure =  Float(insertFirstValue.text!), let anotherParamFigure = Float(insertSecondValue.text!) {
+    func baseAreaFigureCalc() -> Double {
+        var baseAreaFigureValue = Double()
+        if let heightFigure =  Double(insertFirstValue.text!), let anotherParamFigure = Double(insertSecondValue.text!) {
             switch currentMode {
-                case .coneMode:
-                    baseAreaFigureValue = powf(anotherParamFigure, 2.0)*Float.pi
-                case .cylinderMode:
-                    baseAreaFigureValue = powf(anotherParamFigure, 2.0)*Float.pi
+                case .coneMode, .cylinderMode:
+                    baseAreaFigureValue = pow(anotherParamFigure, 2.0)*Double.pi
                 case .pyramidMode:
-                    if heightFigure < anotherParamFigure {
-                        baseAreaFigureValue = (powf(anotherParamFigure, 2.0)-powf(heightFigure, 2.0))*2
-                    } else {
-                        alert(alertTitle: "This is not pyramid", alertMessage: "h must be less than s", alertActionTitle: "Retry")
-                    }
+                    baseAreaFigureValue = (pow(anotherParamFigure, 2.0)-pow(heightFigure, 2.0))*2
                 default:
                     break
             }
@@ -291,16 +280,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     }
     
     //MARK: - Площа бічн. поверхні
-    func sideSurfaceAreaFigureCalc() -> Float {
-        var sideSurfaceAreaFigureValue = Float()
-        if let heightFigure =  Float(insertFirstValue.text!), let anotherParamFigure =  Float(insertSecondValue.text!) {
+    func sideSurfaceAreaFigureCalc() -> Double {
+        var sideSurfaceAreaFigureValue = Double()
+        if let heightFigure = Double(insertFirstValue.text!), let anotherParamFigure =  Double(insertSecondValue.text!) {
                 switch currentMode {
                 case .coneMode:
-                    sideSurfaceAreaFigureValue = 0.0 //MARK: - TO DO
+                    sideSurfaceAreaFigureValue = anotherParamFigure*Double.pi*pow(pow(anotherParamFigure, 2)+pow(heightFigure, 2), 0.5)
                 case .cylinderMode:
-                    sideSurfaceAreaFigureValue = heightFigure*2*Float.pi*anotherParamFigure
+                    sideSurfaceAreaFigureValue = heightFigure*2*Double.pi*anotherParamFigure
                 case .pyramidMode:
-                    sideSurfaceAreaFigureValue = 0.0 //MARK: - TO DO
+                    sideSurfaceAreaFigureValue = pow(pow(anotherParamFigure, 2.0)-pow(heightFigure, 2.0),0.5) * 4 * pow(pow(anotherParamFigure, 2.0)-pow(pow(anotherParamFigure, 2.0)-pow(heightFigure, 2.0),0.5)/2, 0.5)
                 default:
                     break
                 }
@@ -309,16 +298,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     }
     
     //MARK: - Об'єм фігури
-    func volumeFigureCalc() -> Float {
-        var volumeFigureValue = Float()
-        if let heightFigure = Float(insertFirstValue.text!), let _ = Float(insertSecondValue.text!) {
+    func volumeFigureCalc() -> Double {
+        var volumeFigureValue = Double()
+        if let heightFigure = Double(insertFirstValue.text!), let _ = Double(insertSecondValue.text!) {
             switch currentMode {
-            case .coneMode:
+            case .coneMode, .pyramidMode:
                 volumeFigureValue = heightFigure*baseAreaFigureCalc()/3
             case .cylinderMode:
                 volumeFigureValue = heightFigure*baseAreaFigureCalc()
-            case .pyramidMode:
-                volumeFigureValue = heightFigure*baseAreaFigureCalc()/3
             default:
                 break
             }
@@ -326,7 +313,36 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         return volumeFigureValue
     }
     
-    //MARK: - ADD FUNCTIONALITY
+    func operationButtonAction(operationButton: Int) {
+        if currentMode == .defaultMode
+        {
+            if stringIsNumber(rawString: insertResultTextField.text!) {
+                a = Double(insertResultTextField.text!)!
+                insertResultTextField.text! = ""
+                switch operationButton {
+                case 2:
+                    plusButtonActive = true
+                    print("plusButtonPress")
+                case 3:
+                    minusButtonActive = true
+                    print("minusButtonPress")
+                case 4:
+                    multiplyButtonActive = true
+                    print("multiplyButtonPress")
+                case 5:
+                    divideButtonActive = true
+                    print("divideButtonPress")
+                default:
+                    return
+                }
+                
+            } else {
+                alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
+            }
+        }
+    }
+    
+    //MARK: - ADDING FUNCTIONALITY
     @objc func functionalButtonPress(sender: UIButton) {
         switch sender.tag {
         case 0:
@@ -343,40 +359,44 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             print("totalButtonPress")
             if currentMode == .defaultMode
             {
-                var c: Float = 0.0
+                var c: Double = 0.0
                 if plusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
                     plusButtonActive = false
-                    c = a + Float(insertResultTextField.text!)!
+                    c = a + Double(insertResultTextField.text!)!
                     print("Result total:",insertResultTextField.text!)
                 }
                 if minusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
                     minusButtonActive = false
-                    c = a - Float(insertResultTextField.text!)!
+                    c = a - Double(insertResultTextField.text!)!
                     print("Result total:",insertResultTextField.text!)
                 }
                 if multiplyButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
                     multiplyButtonActive = false
-                    c = a * Float(insertResultTextField.text!)!
+                    c = a * Double(insertResultTextField.text!)!
                     print("Result total:",insertResultTextField.text!)
                 }
                 if divideButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
                     if Float(insertResultTextField.text!) != 0 {
                         divideButtonActive = false
-                        c = a / Float(insertResultTextField.text!)!
+                        c = a / Double(insertResultTextField.text!)!
                         print("Result total:",insertResultTextField.text!)
                     } else {
                         insertResultTextField.text! = "ERROR"
                         print("Result total:",insertResultTextField.text!,"Dividing by 0 is impossible")
                     }
                 }
-                insertResultTextField.text! = c.truncatingRemainder(dividingBy: 1) > 0.00000000000000000001 ?  String(c) : String(Int(c))
+                insertResultTextField.addNumber(c)
             }
             else
             {
-                resultLabel.frame = CGRect(x: insertFirstValue.frame.origin.x+insertFirstValue.frame.size.width+20, y: 50, width: self.view.frame.width/3, height: self.view.frame.height/25)
-                sideSurfaceArea.frame = CGRect(x: insertFirstValue.frame.origin.x+insertFirstValue.frame.size.width+20, y: self.resultLabel.frame.origin.y+self.resultLabel.frame.size.height+20, width: self.view.frame.width/3, height: self.view.frame.height/25)
-                totalSurfaceArea.frame = CGRect(x: insertFirstValue.frame.origin.x+insertFirstValue.frame.size.width+20, y: self.sideSurfaceArea.frame.origin.y+self.sideSurfaceArea.frame.size.height+20, width: self.view.frame.width/3, height: self.view.frame.height/25)
-                volumeFigure.frame = CGRect(x: insertFirstValue.frame.origin.x+insertFirstValue.frame.size.width+20, y: self.totalSurfaceArea.frame.origin.y+self.totalSurfaceArea.frame.size.height+20, width: self.view.frame.width/3, height: self.view.frame.height/25)
+                let x = insertFirstValue.frame.origin.x + insertFirstValue.frame.size.width + 20
+                let labelWidth = self.view.frame.width/3
+                let labelHeight = self.view.frame.height/25
+                
+                resultLabel.frame = CGRect(x: x, y: 50, width: labelWidth, height: labelHeight)
+                sideSurfaceArea.frame = CGRect(x: x, y: self.resultLabel.frame.origin.y+self.resultLabel.frame.size.height+20, width: labelWidth, height: labelHeight)
+                totalSurfaceArea.frame = CGRect(x: x, y: self.sideSurfaceArea.frame.origin.y+self.sideSurfaceArea.frame.size.height+20, width: labelWidth, height: labelHeight)
+                volumeFigure.frame = CGRect(x: x, y: self.totalSurfaceArea.frame.origin.y+self.totalSurfaceArea.frame.size.height+20, width: labelWidth, height: labelHeight)
                 
                 resultLabel.font = UIFont.systemFont(ofSize: self.view.frame.height/30, weight: .light)
                 sideSurfaceArea.font = UIFont.systemFont(ofSize: self.view.frame.height/30, weight: .light)
@@ -390,77 +410,63 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                 
                 resultLabel.textAlignment = .center
                 
-                resultLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
-                sideSurfaceArea.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
-                totalSurfaceArea.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
-                volumeFigure.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleBottomMargin, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+                resultLabel.autoresizingMask = flexible
+                sideSurfaceArea.autoresizingMask = flexible
+                totalSurfaceArea.autoresizingMask = flexible
+                volumeFigure.autoresizingMask = flexible
                 
                 self.view.addSubview(resultLabel)
                 self.view.addSubview(sideSurfaceArea)
                 self.view.addSubview(totalSurfaceArea)
                 self.view.addSubview(volumeFigure)
                 
-                resultLabel.text = "Result:"
-                sideSurfaceArea.text = "S^side =" + String(sideSurfaceAreaFigureCalc())
-                if currentMode == .cylinderMode {
-                    totalSurfaceArea.text = "S^total =" + String(sideSurfaceAreaFigureCalc()+2*baseAreaFigureCalc())
+                if let a = Double(insertFirstValue.text!), let b = Double(insertSecondValue.text!) {
+                    if a > 0 && b > 0 {
+                        if currentMode == .pyramidMode {
+                            if a < b {
+                                resultLabel.text = "Result:"
+                                sideSurfaceArea.text = "S^side =" + String(sideSurfaceAreaFigureCalc())
+                                totalSurfaceArea.text = "S^total =" + String((sideSurfaceAreaFigureCalc()+baseAreaFigureCalc())/8)
+                                volumeFigure.text = "V = " + String(volumeFigureCalc())
+                            } else {
+                                sideSurfaceArea.removeFromSuperview()
+                                totalSurfaceArea.removeFromSuperview()
+                                volumeFigure.removeFromSuperview()
+                                resultLabel.text = "ERROR"
+                                alert(alertTitle: "This is not pyramid", alertMessage: "h must be less than s", alertActionTitle: "Retry")
+                                
+                            }
+                        } else {
+                            resultLabel.text = "Result:"
+                            sideSurfaceArea.text = "S^side =" + String(sideSurfaceAreaFigureCalc())
+                            if currentMode == .cylinderMode {
+                                totalSurfaceArea.text = "S^total =" + String((sideSurfaceAreaFigureCalc()+2*baseAreaFigureCalc())/8)
+                            } else {
+                                totalSurfaceArea.text = "S^total =" + String((sideSurfaceAreaFigureCalc()+baseAreaFigureCalc())/8)
+                            }
+                            volumeFigure.text = "V = " + String(volumeFigureCalc())
+                        }
+                    } else {
+                        sideSurfaceArea.removeFromSuperview()
+                        totalSurfaceArea.removeFromSuperview()
+                        volumeFigure.removeFromSuperview()
+                        resultLabel.text = "ERROR"
+                        alert(alertTitle: "This is not figure", alertMessage: "Params of figure must be positive", alertActionTitle: "Retry")
+                    }
                 } else {
-                    totalSurfaceArea.text = "S^total =" + String(sideSurfaceAreaFigureCalc()+baseAreaFigureCalc())
+                    sideSurfaceArea.removeFromSuperview()
+                    totalSurfaceArea.removeFromSuperview()
+                    volumeFigure.removeFromSuperview()
+                    resultLabel.text = "ERROR"
+                    alert(alertTitle: "This is not figure", alertMessage: "Params of figure must be positive", alertActionTitle: "Retry")
                 }
-                volumeFigure.text = "V = " + String(volumeFigureCalc())
-        }
-        case 2:
-            print("plusButtonPress")
-            if currentMode == .defaultMode
-            {
-                if stringIsNumber(rawString: insertResultTextField.text!) {
-                    a = Float(insertResultTextField.text!)!
-                    insertResultTextField.text! = ""
-                    plusButtonActive = true
-                } else {
-                    alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
-                }
+                
             }
-        case 3:
-            print("minusButtonPress")
-            if currentMode == .defaultMode
-            {
-                if stringIsNumber(rawString: insertResultTextField.text!) {
-                    a = Float(insertResultTextField.text!)!
-                    insertResultTextField.text! = ""
-                    minusButtonActive = true
-                } else {
-                    alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
-                }
-            }
-        case 4:
-            print("multiplyButtonPress")
-            if currentMode == .defaultMode
-            {
-                if stringIsNumber(rawString: insertResultTextField.text!) {
-                    a = Float(insertResultTextField.text!)!
-                    insertResultTextField.text! = ""
-                    multiplyButtonActive = true
-                } else {
-                    alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
-                }
-            }
-        case 5:
-            print("divideButtonPress")
-            if currentMode == .defaultMode
-            {
-                if stringIsNumber(rawString: insertResultTextField.text!) {
-                    a = Float(insertResultTextField.text!)!
-                    insertResultTextField.text! = ""
-                    divideButtonActive = true
-                } else {
-                    alert(alertTitle: "Invalid format", alertMessage: "The data you entered is NOT a number", alertActionTitle: "Retry")
-                }
-            }
+        case 2, 3, 4, 5:
+            operationButtonAction(operationButton: sender.tag)
         case 6:
             print("clearButtonPress")
-            if currentMode == .defaultMode
-            {
+            if currentMode == .defaultMode {
                 insertResultTextField.text! = ""
                 plusButtonActive = false
                 minusButtonActive = false
@@ -469,7 +475,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             }
         case 7:
             print("signChangeButtonPress")
-            if insertResultTextField.text != nil {
+            if insertResultTextField.text != nil  {
                 let string = String(insertResultTextField.text!)
                 if string[0] == "+" {
                     insertResultTextField.text! = string.replacingOccurrences(of: "+", with: "-")
@@ -498,17 +504,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         }
     }
     
-    fileprivate func removingLabels() {
+    func removingLabels() {
         resultLabel.removeFromSuperview()
         sideSurfaceArea.removeFromSuperview()
         totalSurfaceArea.removeFromSuperview()
         volumeFigure.removeFromSuperview()
     }
     
-    @objc func onDoneButtonTapped() { //MARK: - TO DO
+    @objc func onDoneButtonTapped() {
         toolBar.removeFromSuperview()
         picker.removeFromSuperview()
-        
         switch currentMode { //MARK: - Переключення режимів
         case .defaultMode:
             imageView.removeFromSuperview()
@@ -553,33 +558,12 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     
     // MARK: - is string number
     func stringIsNumber(rawString: String) -> Bool {
-        let string = rawString.replacingOccurrences(of: ",", with: ".")
         var answer = true
-        if string.count == 0 || string[0] == "." { answer = false }
-        else {
-            var validCharactersCount = 0
-            var signCount = 0
-            var pointCount = 0
-            for currentChar in string {
-                if currentChar >= "\u{0030}" && currentChar <= "\u{0039}" || currentChar ==  "." || currentChar == "-" || currentChar == "+" || currentChar == " " {
-                    validCharactersCount+=1
-                    if currentChar == "." { pointCount += 1 }
-                    if currentChar == "-" || currentChar == "+" { signCount += 1 }
-                    if pointCount > 1 || signCount > 1 { answer = false; break }
-                }
-            }
-            if validCharactersCount != string.count { answer = false }
-            if signCount == 1 && string[0] != "+" && signCount == 1 && string[0] != "-" { answer = false }
-            if signCount == 1 && pointCount == 1 && string[1] == "." { answer = false }
-        }
-        if answer {
-            if let a = Float(string) { print("NUMBER:", a) }
+        if let a = Double(rawString) { print("NUMBER:", a) }
             else {
-                alert(alertTitle: "BUG", alertMessage: "THERE IS THE BUG IN MY CODE", alertActionTitle: "FIX")
-                print("NOT A NUMBER:", string, "THERE IS THE BUG")
+                print("NOT A NUMBER:", rawString, "THERE IS THE BUG")
                 answer = false
             }
-        } else { print("NOT A NUMBER:", string, "Without Float(string)") }
         return answer
     }
     
@@ -605,8 +589,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     }
 
 }
-
-
 
 
 
@@ -656,5 +638,15 @@ extension String {
         let start = index(startIndex, offsetBy: range.lowerBound)
         let end = index(start, offsetBy: range.upperBound - range.lowerBound)
         return String(self[start ..< end])
+    }
+}
+
+//MARK: - Converting numeric value
+extension UITextField {
+    func addNumber(_ number: Float) {
+        self.text = number.truncatingRemainder(dividingBy: 1) > 1.0E-15 || number > Float(Int.max)  ?  String(number) : String(Int(number))
+    }
+    func addNumber(_ number: Double) {
+        self.text = number.truncatingRemainder(dividingBy: 1) > 1.0E-15 || number > Double(Int.max)  ?  String(number) : String(Int(number))
     }
 }
