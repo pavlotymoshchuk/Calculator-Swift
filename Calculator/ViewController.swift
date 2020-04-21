@@ -16,17 +16,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     let insertResultTextField = UITextField()
     let pointButton = UIButton()
     let totalButton = UIButton()
-    let plusButton = UIButton()
-    let minusButton = UIButton()
-    let multiplyButton = UIButton()
-    let divideButton = UIButton()
-    let myCalculator = UIButton()
+    var plusButton = (button: UIButton(), isActive: false)
+    var minusButton = (button: UIButton(), isActive: false)
+    var multiplyButton = (button: UIButton(), isActive: false)
+    var divideButton = (button: UIButton(), isActive: false)
+    var myCalculatorButton = (button: UIButton(), isActive: false)
     let signChangeButton = UIButton()
     let clearButton = UIButton()
-    var plusButtonActive = false
-    var minusButtonActive = false
-    var multiplyButtonActive = false
-    var divideButtonActive = false
     var a = Double()
     var b = Double()
     var toolBar = UIToolbar()
@@ -38,7 +34,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         case cylinderMode
     }
     var currentMode = calcModes.defaultMode
-    let calcTypes = ["default","coneMode","cylinderMode","pyramidMode"]
+    let calcTypes = ["Default","Cone mode","Cylinder mode","Pyramid mode"]
     let imageView = UIImageView()
     let insertFirstValue = UITextField()
     let insertSecondValue = UITextField()
@@ -110,7 +106,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.handleGesture(gesture:)))
         swipeRight.direction = .right
         view.addGestureRecognizer(swipeRight)
-        
         super.view.addSubview(insertResultTextField)
         insertResultTextField.delegate = self
     }
@@ -166,13 +161,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         insertResultTextFieldADD() //MARK: -  Creating insertResultTextField
         creatingFunctionalButtons(currentFunctionalButton: pointButton, x: 200, y: 585, title: ".", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 0)
         creatingFunctionalButtons(currentFunctionalButton: totalButton, x: 285, y: 585, title: "=", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 1)
-        creatingFunctionalButtons(currentFunctionalButton: plusButton, x: 285, y: 500, title: "+", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 2)
-        creatingFunctionalButtons(currentFunctionalButton: minusButton, x: 285, y: 415, title: "-", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 3)
-        creatingFunctionalButtons(currentFunctionalButton: multiplyButton, x: 285, y: 330, title: "*", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 4)
-        creatingFunctionalButtons(currentFunctionalButton: divideButton, x: 285, y: 245, title: "/", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 5)
+        creatingFunctionalButtons(currentFunctionalButton: plusButton.button, x: 285, y: 500, title: "+", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 2)
+        creatingFunctionalButtons(currentFunctionalButton: minusButton.button, x: 285, y: 415, title: "-", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 3)
+        creatingFunctionalButtons(currentFunctionalButton: multiplyButton.button, x: 285, y: 330, title: "*", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 4)
+        creatingFunctionalButtons(currentFunctionalButton: divideButton.button, x: 285, y: 245, title: "/", backgroundColor: 0xFFA91E, backgroundColorHighlighted: 0xCA8516, action: #selector(functionalButtonPress),tag: 5)
         creatingFunctionalButtons(currentFunctionalButton: clearButton, x: 30, y: 245, title: "AC", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 6)
         creatingFunctionalButtons(currentFunctionalButton: signChangeButton, x: 115, y: 245, title: "+/-", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 7)
-        creatingFunctionalButtons(currentFunctionalButton: myCalculator, x: 200, y: 245, title: "f(x)", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 8)
+        creatingFunctionalButtons(currentFunctionalButton: myCalculatorButton.button, x: 200, y: 245, title: "f(x)", backgroundColor: 0x494C4D, backgroundColorHighlighted: 0x858585, action: #selector(functionalButtonPress),tag: 8)
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
@@ -321,16 +316,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                 insertResultTextField.text! = ""
                 switch operationButton {
                 case 2:
-                    plusButtonActive = true
+                    plusButton.isActive = true
                     print("plusButtonPress")
                 case 3:
-                    minusButtonActive = true
+                    minusButton.isActive = true
                     print("minusButtonPress")
                 case 4:
-                    multiplyButtonActive = true
+                    multiplyButton.isActive = true
                     print("multiplyButtonPress")
                 case 5:
-                    divideButtonActive = true
+                    divideButton.isActive = true
                     print("divideButtonPress")
                 default:
                     return
@@ -360,24 +355,24 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             if currentMode == .defaultMode
             {
                 var c: Double = 0.0
-                if plusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
-                    plusButtonActive = false
+                if plusButton.isActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                    plusButton.isActive = false
                     c = a + Double(insertResultTextField.text!)!
                     print("Result total:",insertResultTextField.text!)
                 }
-                if minusButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
-                    minusButtonActive = false
+                if minusButton.isActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                    minusButton.isActive = false
                     c = a - Double(insertResultTextField.text!)!
                     print("Result total:",insertResultTextField.text!)
                 }
-                if multiplyButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
-                    multiplyButtonActive = false
+                if multiplyButton.isActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                    multiplyButton.isActive = false
                     c = a * Double(insertResultTextField.text!)!
                     print("Result total:",insertResultTextField.text!)
                 }
-                if divideButtonActive && stringIsNumber(rawString: insertResultTextField.text!) {
+                if divideButton.isActive && stringIsNumber(rawString: insertResultTextField.text!) {
                     if Float(insertResultTextField.text!) != 0 {
-                        divideButtonActive = false
+                        divideButton.isActive = false
                         c = a / Double(insertResultTextField.text!)!
                         print("Result total:",insertResultTextField.text!)
                     } else {
@@ -386,9 +381,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                     }
                 }
                 insertResultTextField.addNumber(c)
-            }
-            else
-            {
+            } else {
                 let x = insertFirstValue.frame.origin.x + insertFirstValue.frame.size.width + 20
                 let labelWidth = self.view.frame.width/3
                 let labelHeight = self.view.frame.height/25
@@ -426,7 +419,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                             if a < b {
                                 resultLabel.text = "Result:"
                                 sideSurfaceArea.text = "S^side =" + String(sideSurfaceAreaFigureCalc())
-                                totalSurfaceArea.text = "S^total =" + String((sideSurfaceAreaFigureCalc()+baseAreaFigureCalc())/8)
+                                totalSurfaceArea.text = "S^total =" + String((sideSurfaceAreaFigureCalc()+baseAreaFigureCalc()))
                                 volumeFigure.text = "V = " + String(volumeFigureCalc())
                             } else {
                                 sideSurfaceArea.removeFromSuperview()
@@ -434,15 +427,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                                 volumeFigure.removeFromSuperview()
                                 resultLabel.text = "ERROR"
                                 alert(alertTitle: "This is not pyramid", alertMessage: "h must be less than s", alertActionTitle: "Retry")
-                                
                             }
                         } else {
                             resultLabel.text = "Result:"
                             sideSurfaceArea.text = "S^side =" + String(sideSurfaceAreaFigureCalc())
                             if currentMode == .cylinderMode {
-                                totalSurfaceArea.text = "S^total =" + String((sideSurfaceAreaFigureCalc()+2*baseAreaFigureCalc())/8)
+                                totalSurfaceArea.text = "S^total =" + String((sideSurfaceAreaFigureCalc()+2*baseAreaFigureCalc()))
                             } else {
-                                totalSurfaceArea.text = "S^total =" + String((sideSurfaceAreaFigureCalc()+baseAreaFigureCalc())/8)
+                                totalSurfaceArea.text = "S^total =" + String((sideSurfaceAreaFigureCalc()+baseAreaFigureCalc()))
                             }
                             volumeFigure.text = "V = " + String(volumeFigureCalc())
                         }
@@ -460,7 +452,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                     resultLabel.text = "ERROR"
                     alert(alertTitle: "This is not figure", alertMessage: "Params of figure must be positive", alertActionTitle: "Retry")
                 }
-                
             }
         case 2, 3, 4, 5:
             operationButtonAction(operationButton: sender.tag)
@@ -468,10 +459,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
             print("clearButtonPress")
             if currentMode == .defaultMode {
                 insertResultTextField.text! = ""
-                plusButtonActive = false
-                minusButtonActive = false
-                multiplyButtonActive = false
-                divideButtonActive = false
+                plusButton.isActive = false
+                minusButton.isActive = false
+                multiplyButton.isActive = false
+                divideButton.isActive = false
             }
         case 7:
             print("signChangeButtonPress")
@@ -486,19 +477,22 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
                 }
             } else { insertResultTextField.text = "-" }
         case 8:
-            print("myCalculatorButtonPress")
-            picker = UIPickerView.init()
-            picker.delegate = self as UIPickerViewDelegate
-            picker.backgroundColor = UIColor.black
-            picker.setValue(UIColor.white, forKey: "textColor")
-            picker.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
-            picker.contentMode = .center
-            picker.frame = CGRect.init(x: 0, y: super.view.frame.size.height - 300, width: super.view.frame.size.width, height: 300)
-            self.view.addSubview(picker)
-            toolBar = UIToolbar.init(frame: CGRect.init(x: 0, y: super.view.frame.size.height - 350, width: super.view.frame.size.width, height: 50))
-            toolBar.barStyle = .black
-            toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
-            self.view.addSubview(toolBar)
+            if !myCalculatorButton.isActive {
+                print("myCalculatorButtonPress")
+                picker = UIPickerView.init()
+                picker.delegate = self as UIPickerViewDelegate
+                picker.backgroundColor = UIColor.black
+                picker.setValue(UIColor.white, forKey: "textColor")
+                picker.autoresizingMask = [.flexibleWidth, .flexibleHeight, .flexibleTopMargin, .flexibleLeftMargin, .flexibleRightMargin]
+                picker.contentMode = .center
+                picker.frame = CGRect.init(x: 0, y: super.view.frame.size.height - 300, width: super.view.frame.size.width, height: 300)
+                self.view.addSubview(picker)
+                toolBar = UIToolbar.init(frame: CGRect.init(x: 0, y: super.view.frame.size.height - 350, width: super.view.frame.size.width, height: 50))
+                toolBar.barStyle = .black
+                toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
+                self.view.addSubview(toolBar)
+                myCalculatorButton.isActive = true
+            }
         default:
             print("SOMETHING WENT WRONG !!!!!!!!!!")
         }
@@ -514,6 +508,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
     @objc func onDoneButtonTapped() {
         toolBar.removeFromSuperview()
         picker.removeFromSuperview()
+        myCalculatorButton.isActive = false
         switch currentMode { //MARK: - Переключення режимів
         case .defaultMode:
             imageView.removeFromSuperview()
@@ -528,6 +523,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         }
     }
     
+    //MARK: - Picker View
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -561,7 +557,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegat
         var answer = true
         if let a = Double(rawString) { print("NUMBER:", a) }
             else {
-                print("NOT A NUMBER:", rawString, "THERE IS THE BUG")
+                print("NOT A NUMBER:", rawString)
                 answer = false
             }
         return answer
